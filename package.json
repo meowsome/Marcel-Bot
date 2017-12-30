@@ -1,0 +1,19 @@
+{
+  "name": "marcel",
+  "version": "1.0.0",
+  "description": "A cute and helpful Discord bot!",
+  "main": "app.js",
+  "engines": {
+    "node": "8.9.3"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "meowsome with LOTS OF HELP FROM BUCKETMUNCHER",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "weather-js": "^2.0.0"
+  }
+}
