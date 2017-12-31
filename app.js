@@ -2,23 +2,6 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const weather = require('weather-js');
 
-//web stuff
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5000;
-app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
-app.get('/', (request, response) => {
-    response.render('index');
-});
-app.listen(port, () => {
-    console.log('Website is running on http://localhost:' + port);
-});
-setInterval(() => {
-  http.get('http://meowsome-marcel.herokuapp.com');
-}, 900000);
-//end web stuff
-
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
     client.user.setGame('Say my name and "help" for help');
