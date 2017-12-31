@@ -96,8 +96,8 @@ client.on('message', message => {
                             embed: {
                                 color: 3066993,
                                 description: "Here's your avatar!",
-                                "image" {
-                                    "url" : message.author.avatarURL
+                                "image": {
+                                    "url": message.author.avatarURL
                                 }
                             }
                         });
