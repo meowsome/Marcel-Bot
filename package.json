@@ -14,8 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "^11.2.1",
-    "ejs": "^2.5.7",
-    "express": "^4.16.2",
     "weather-js": "^2.0.0"
   }
 }

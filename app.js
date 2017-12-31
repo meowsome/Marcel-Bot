@@ -29,6 +29,7 @@ client.on('message', message => {
                     case 'help':
                     case 'instructions':
                     case 'use':
+                    case 'about':
                         if (runCheck % 2 === 0) {
                             break;
                         } else {
@@ -37,15 +38,13 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!"
+                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
                             }
                         });
                         break;
 
                     case 'creators':
                     case 'created':
-                    case 'made':
-                    case 'credit':
                         if (runCheck % 2 === 0) {
                             break;
                         } else {
@@ -68,33 +67,7 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Here's a list of new stuff I've learned in the past",
-                                "fields": [
-                                    {
-                                        "name": "12/30/17",
-                                        "value": "I now reside on a new host, so hopefully I'll stay up longer than two hours this time! :stuck_out_tongue:"
-                                    },
-                                    {
-                                        "name": "12/29/17",
-                                        "value": "I no longer get confused when a person tries to trick me with spamming."
-                                    },
-                                    {
-                                        "name": "12/28/17",
-                                        "value": "I can now show funny gifs with my Magic 8-Ball responses, and I can also show you the status of any Minecraft server."
-                                    },
-                                    {
-                                        "name": "12/27/17",
-                                        "value": "I can now show you the weather for any location you'd like, as well as answer any Magic 8-Ball question."
-                                    },
-                                    {
-                                        "name": "12/26/17",
-                                        "value": "My code will now be hosted on glitch.com so that I'm online 24/7! I can now also show you my ping, my uptime, my invite link, your Discord avatar, plus I've gotten a lot more personable with my responses!"
-                                    },
-                                    {
-                                        "name": "12/10/17",
-                                        "value": "Initial development began."
-                                    }
-                                ]
+                                description: "[Click here to see how I've grown in the past!](http://marcel.vulpix.pw/#changelog)"
                             }
                         });
                         break;
@@ -108,7 +81,7 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: `I am able to respond in ${Date.now() - message.createdTimestamp}ms ◕‿◕✿`
+                                description: `I am able to respond to you in ${Date.now() - message.createdTimestamp}ms ◕‿◕✿`
                             }
                         });
                         break;
@@ -122,7 +95,10 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: message.author.avatarURL
+                                description: "Here's your avatar!",
+                                "image" {
+                                    "url" : message.author.avatarURL
+                                }
                             }
                         });
                         break;
@@ -370,7 +346,7 @@ client.on('message', message => {
                     message.channel.send({
                         embed: {
                             color: 3066993,
-                            description: "Test error message"
+                            description: "Ooooops, something's gone wrong... I can't figure out what though! Please try again (ó﹏ò｡)"
                         }
                     });
                 }
