@@ -343,10 +343,12 @@ client.on('message', message => {
                         missCount++;
                 }
                 if (missCount === splitMessage.length) {
+                    var randomError = ['What? Hi? Hello? Somebody said my name???!?', 'Marcel is here!!!!!!', 'W-What? Sorry I was napping （´・｀）', 'Who said my nameeeeeeeeeeeeeeeee', 'Hi! I\'m here, ready to annoy you!'];
+                    var choice = Math.round(Math.random() * (randomError.length - 1));
                     message.channel.send({
                         embed: {
                             color: 3066993,
-                            description: "Ooooops, something's gone wrong... I can't figure out what though! Please try again (ó﹏ò｡)"
+                            description: randomError[choice]
                         }
                     });
                 }
