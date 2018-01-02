@@ -21,8 +21,8 @@ client.on("guildCreate", guild => {
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397878259678707722').setName(`${client.users.size}`);
-    client.channels.get('397878247519682561').setName(`${client.guilds.size}-`);
+    client.channels.get('397889669989400596').setName(`${client.users.size}`);
+    client.channels.get('397889346990112768').setName(`${client.guilds.size}-`);
 });
 
 client.on("guildDelete", guild => {
@@ -32,8 +32,8 @@ client.on("guildDelete", guild => {
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397878259678707722').setName(`${client.users.size}`);
-    client.channels.get('397878247519682561').setName(`${client.guilds.size}-`);
+    client.channels.get('397889669989400596').setName(`${client.users.size}`);
+    client.channels.get('397889346990112768').setName(`${client.guilds.size}-`);
 });
 
 client.on('message', message => {
