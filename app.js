@@ -17,7 +17,12 @@ client.on("guildDelete", guild => {
 
 client.on('message', message => {
     if (message.author.bot) return;
-    client.channels.get('397862894005387287').send('This is a test! :)');
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `Test :)`
+        }
+    });
     var step = message.content.toLowerCase();
     var step = step.replace('marcel', ' marcel ');
     var splitMessage = step.split(" ");
