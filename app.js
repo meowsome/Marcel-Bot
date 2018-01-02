@@ -12,7 +12,6 @@ client.on('ready', () => {
             description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
         }
     });
-    console.log(`${client.guilds.size}`);
 });
 
 client.on("guildCreate", guild => {
@@ -22,19 +21,19 @@ client.on("guildCreate", guild => {
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397878259678707722').setName(`${client.users.size}`);
-    client.channels.get('397878247519682561').setName(`${client.guilds.size}`);
+    client.channels.get('397878259678707722').setName(` ${client.users.size} `);
+    client.channels.get('397878247519682561').setName(` ${client.guilds.size} `);
 });
 
 client.on("guildDelete", guild => {
     client.channels.get('397862894005387287').send({
         embed: {
             color: 3066993,
-            description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:* ${guild.memberCount}`
+            description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397878259678707722').setName(`${client.users.size}`);
-    client.channels.get('397878247519682561').setName(`${client.guilds.size}`);
+    client.channels.get('397878259678707722').setName(` ${client.users.size} `);
+    client.channels.get('397878247519682561').setName(` ${client.guilds.size} `);
 });
 
 client.on('message', message => {
