@@ -16,6 +16,7 @@ client.on("guildDelete", guild => {
 });
 
 client.on('message', message => {
+    client.channels.get(397862894005387287).send('This is a test! :)');
     if (message.author.bot) return;
     var step = message.content.toLowerCase();
     var step = step.replace('marcel', ' marcel ');
