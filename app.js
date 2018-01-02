@@ -5,24 +5,35 @@ const weather = require('weather-js');
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
     client.user.setGame('Say my name and "help" for help');
+    
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`
+        }
+    });
 });
 
 client.on("guildCreate", guild => {
-    console.log(`Joined Server: "${guild.name}" ID: ${guild.id} Members: ${guild.memberCount}`);
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `Joined Server: "${guild.name}" ID: ${guild.id} Members: ${guild.memberCount}`
+        }
+    });
 });
 
 client.on("guildDelete", guild => {
-    console.log(`Kicked from Server: "${guild.name}" ID: ${guild.id} Members: ${guild.memberCount}`);
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `Kicked from Server: "${guild.name}" ID: ${guild.id} Members: ${guild.memberCount}`
+        }
+    });
 });
 
 client.on('message', message => {
     if (message.author.bot) return;
-    client.channels.get('397862894005387287').send({
-        embed: {
-            color: 3066993,
-            description: `Test :)`
-        }
-    });
     var step = message.content.toLowerCase();
     var step = step.replace('marcel', ' marcel ');
     var splitMessage = step.split(" ");
