@@ -21,8 +21,8 @@ client.on("guildCreate", guild => {
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397889669989400596').edit({name: `${client.users.size}`,bitrate:8000});
-    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}`,bitrate:8000});
+    client.channels.get('397889669989400596').edit({name: `${client.users.size}-`,bitrate:8000});
+    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}-`,bitrate:8000});
 });
 
 client.on("guildDelete", guild => {
@@ -32,8 +32,8 @@ client.on("guildDelete", guild => {
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397889669989400596').edit({name: `${client.users.size},`,bitrate:8000});
-    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}`,bitrate:8000});
+    client.channels.get('397889669989400596').edit({name: `${client.users.size}-,`,bitrate:8000});
+    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}-`,bitrate:8000});
 });
 
 client.on('message', message => {
