@@ -122,6 +122,7 @@ client.on('message', message => {
                                 }
                             }
                         }
+                        message.channel.send(id);
                         message.channel.send({
                             embed: {
                                 color: 3066993,
