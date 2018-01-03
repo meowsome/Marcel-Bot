@@ -118,11 +118,10 @@ client.on('message', message => {
                             var currentString = splitMessage[searchVarE];
                             for (var searchVarF = 0; searchVarF < currentString.length - 1; searchVarF++) {
                                 if ((currentString.charAt(searchVarF) === '@') && (currentString.indexOf("<") !== -1)) {
-                                    id = currentString.slice(currentString.indexOf("@") + 1, currentString.length - 1);
+                                    id = currentString;
                                 }
                             }
                         }
-                        console.log(id);
                         message.channel.send({
                             embed: {
                                 color: 3066993,
