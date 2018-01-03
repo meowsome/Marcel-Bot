@@ -122,7 +122,7 @@ client.on('message', message => {
                                 }
                             }
                         }
-                        message.channel.send(message.author.toString());
+                        console.log(message.author);
                         message.channel.send({
                             embed: {
                                 color: 3066993,
