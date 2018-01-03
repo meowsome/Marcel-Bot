@@ -113,21 +113,12 @@ client.on('message', message => {
                         } else {
                             runCheck *= 7;
                         }
-                        var id = message.author;
-                        for (var searchVarE = 0; searchVarE < splitMessage.length; searchVarE++) {
-                            var currentString = splitMessage[searchVarE];
-                            for (var searchVarF = 0; searchVarF < currentString.length - 1; searchVarF++) {
-                                if ((currentString.charAt(searchVarF) === '@') && (currentString.indexOf("<") !== -1)) {
-                                    id = currentString;
-                                }
-                            }
-                        }
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Here's " + id + "'s avatar!",
+                                description: "Here's your avatar!",
                                 "image": {
-                                    "url": id.avatarURL
+                                    "url": message.author.avatarURL
                                 }
                             }
                         });
