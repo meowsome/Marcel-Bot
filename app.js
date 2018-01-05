@@ -5,17 +5,49 @@ const weather = require('weather-js');
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
     client.user.setGame('Say my name and "help" for help');
-    
+
+    var today = new Date();
+    var minutes = today.getMinutes();
+    var hours = today.getHours();
+    var date = today.getDate();
+    var month = today.getMonth() + 1;
+    var year = today.getFullYear();
+    if (date < 10) {
+        date = '0' + date
+    }
+    if (month < 10) {
+        month = '0' + month
+    }
+    if (hours < 10) {
+        hours = '0' + hours
+    }
+    if (minutes < 10) {
+        minutes = '0' + minutes
+    }
+    time = hours + ':' + minutes;
+    date = month + '/' + date + '/' + year;
+
     client.channels.get('397862894005387287').send({
         embed: {
             color: 3066993,
-            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
+            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+            "footer": {
+                "text": time + " | " + date
+            }
         }
     });
-    
-    client.channels.get('397889669989400596').edit({name: `${client.users.size}-`,bitrate:8000});
-    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}-`,bitrate:8000});
+
+    client.channels.get('397889669989400596').edit({
+        name: `${client.users.size}-`,
+        bitrate: 8000
+    });
+    client.channels.get('397889346990112768').edit({
+        name: `${client.guilds.size}-`,
+        bitrate: 8000
+    });
 });
+
+
 
 client.on("guildCreate", guild => {
     client.channels.get('397862894005387287').send({
@@ -24,9 +56,17 @@ client.on("guildCreate", guild => {
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397889669989400596').edit({name: `${client.users.size}-`,bitrate:8000});
-    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}-`,bitrate:8000});
+    client.channels.get('397889669989400596').edit({
+        name: `${client.users.size}-`,
+        bitrate: 8000
+    });
+    client.channels.get('397889346990112768').edit({
+        name: `${client.guilds.size}-`,
+        bitrate: 8000
+    });
 });
+
+
 
 client.on("guildDelete", guild => {
     client.channels.get('397862894005387287').send({
@@ -35,9 +75,17 @@ client.on("guildDelete", guild => {
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
-    client.channels.get('397889669989400596').edit({name: `${client.users.size}-`,bitrate:8000});
-    client.channels.get('397889346990112768').edit({name: `${client.guilds.size}-`,bitrate:8000});
+    client.channels.get('397889669989400596').edit({
+        name: `${client.users.size}-`,
+        bitrate: 8000
+    });
+    client.channels.get('397889346990112768').edit({
+        name: `${client.guilds.size}-`,
+        bitrate: 8000
+    });
 });
+
+
 
 client.on('message', message => {
     if (message.author.bot) return;
@@ -46,6 +94,12 @@ client.on('message', message => {
     var splitMessage = step.split(" ");
     for (var searchVarA = 0; searchVarA < splitMessage.length; searchVarA++) {
         if (splitMessage[searchVarA] === 'marcel') {
+            message.channel.send({
+                embed: {
+                    color: 0xff0000,
+                    description: "The bot is currently being worked on! You can still use it for now, but you will see some weird things happening. Sorry about that!!"
+                }
+            });
             var missCount = 0;
             var runCheck = 1;
             for (var searchVarB = 0; searchVarB < splitMessage.length; searchVarB++) {
@@ -62,7 +116,7 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
+                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval (Tag somebody to see their avatar too!)\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
                             }
                         });
                         break;
@@ -116,12 +170,18 @@ client.on('message', message => {
                         } else {
                             runCheck *= 7;
                         }
+                        var id = message.author.id;
+                        for (var searchVarE = 0; searchVarE < splitMessage.length; searchVarE++) {
+                            if((splitMessage[searchVarE].indexOf("@")!=-1)&&(splitMessage[searchVarE].indexOf("<")!=-1)&&(splitMessage[searchVarE].indexOf(">")!=-1)) {
+                                id = splitMessage[searchVarE].slice(splitMessage[searchVarE].indexOf("@")+1,splitMessage[searchVarE].indexOf(">"));
+                            }
+                        }
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Here's your avatar!",
-                                "image": {
-                                    "url": message.author.avatarURL
+                                description: "Here's <@" + id + ">'s avatar!",
+                                "image" : {
+                                    "url" : client.users.get(id).avatarURL
                                 }
                             }
                         });
@@ -381,4 +441,4 @@ client.on('message', message => {
     }
 });
 
-client.login(process.env.TOKEN);
+client.login("Mzg5Mjk2MDY3OTE4NjkyMzUy.DSMuMQ.FxOEOFDCS5YVe8NDtddrs3MkjWo");
