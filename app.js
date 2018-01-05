@@ -94,12 +94,6 @@ client.on('message', message => {
     var splitMessage = step.split(" ");
     for (var searchVarA = 0; searchVarA < splitMessage.length; searchVarA++) {
         if (splitMessage[searchVarA] === 'marcel') {
-            message.channel.send({
-                embed: {
-                    color: 0xff0000,
-                    description: "The bot is currently being worked on! You can still use it for now, but you will see some weird things happening. Sorry about that!!"
-                }
-            });
             var missCount = 0;
             var runCheck = 1;
             for (var searchVarB = 0; searchVarB < splitMessage.length; searchVarB++) {
@@ -441,4 +435,4 @@ client.on('message', message => {
     }
 });
 
-client.login("Mzg5Mjk2MDY3OTE4NjkyMzUy.DSMuMQ.FxOEOFDCS5YVe8NDtddrs3MkjWo");
+client.login(process.env.TOKEN);
