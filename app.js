@@ -200,8 +200,9 @@ client.on('message', message => {
                             }
                         }
                         var userCreated = client.users.get(id).createdAt.toString().split(' ');
-                        var currentlyPlaying = client.users.get(id).presence.game.name;
-                        if (!currentlyPlaying) {
+                        if (client.users.get(id).presence.game) {
+                            var currentlyPlaying = client.users.get(id).presence.game.name;
+                        } else {
                             var currentlyPlaying = "Nothing";
                         }
                         message.channel.send({
