@@ -187,6 +187,7 @@ client.on('message', message => {
                     case 'profile':
                     case 'info':
                     case 'information':
+                    case 'user':
                         if (runCheck % 11 === 0) {
                             break;
                         } else {
