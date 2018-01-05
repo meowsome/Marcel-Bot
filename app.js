@@ -110,7 +110,7 @@ client.on('message', message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval (Tag somebody to see their avatar too!)\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
+                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, what's the weather in Denver, Colorado\nMarcel, show me my avatar please\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval (Tag somebody to see their avatar too!)\n• User Information (Again, tag somebody for their info)\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
                             }
                         });
                         break;
@@ -159,6 +159,9 @@ client.on('message', message => {
                         break;
 
                     case 'avatar':
+                    case 'icon':
+                    case 'pfp':
+                    case 'picture':
                         if (runCheck % 7 === 0) {
                             break;
                         } else {
@@ -180,12 +183,72 @@ client.on('message', message => {
                             }
                         });
                         break;
-
-                    case 'uptime':
+                        
+                    case 'profile':
+                    case 'info':
+                    case 'information':
                         if (runCheck % 11 === 0) {
                             break;
                         } else {
                             runCheck *= 11;
+                        }
+                        var id = message.author.id;
+                        for (var searchVarD = 0; searchVarD < splitMessage.length; searchVarD++) {
+                            if((splitMessage[searchVarD].indexOf("@")!=-1)&&(splitMessage[searchVarD].indexOf("<")!=-1)&&(splitMessage[searchVarD].indexOf(">")!=-1)) {
+                                id = splitMessage[searchVarD].slice(splitMessage[searchVarD].indexOf("@")+1,splitMessage[searchVarD].indexOf(">"));
+                            }
+                        }
+                        var userCreated = client.users.get(id).createdAt.toString().split(' ');
+                        var currentlyPlaying = client.users.get(id).presence.game;
+                        if (!currentlyPlaying) {
+                            var currentlyPlaying = "Nothing";
+                        }
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                description: "Here's some information about <@" + id + ">!",
+                                "thumbnail" : {
+                                    "url" : client.users.get(id).avatarURL
+                                },
+                                fields: [{
+                                    name: "Status",
+                                    value: client.users.get(id).presence.status,
+                                    "inline": true
+                                },
+                                {
+                                    name: "Currently Playing",
+                                    value: currentlyPlaying,
+                                    "inline": true
+                                },{
+                                    name: "Username",
+                                    value: client.users.get(id).username,
+                                    "inline": true
+                                    },
+                                {
+                                    name: "Tag",
+                                    value: client.users.get(id).tag,
+                                    "inline": true
+                                    },
+                                {
+                                    name: "ID",
+                                    value: client.users.get(id).id,
+                                    "inline": true
+                                    },
+                                {
+                                    name: "Joined Discord",
+                                    value: userCreated[1] + " " + userCreated[2] + ", " + userCreated[3],
+                                    "inline": true
+                                    },
+                                ]
+                            }
+                        });
+                        break;
+
+                    case 'uptime':
+                        if (runCheck % 13 === 0) {
+                            break;
+                        } else {
+                            runCheck *= 13;
                         }
 
                         function calcUptime(ms) {
@@ -204,10 +267,10 @@ client.on('message', message => {
                         break;
 
                     case 'invite':
-                        if (runCheck % 13 === 0) {
+                        if (runCheck % 17 === 0) {
                             break;
                         } else {
-                            runCheck *= 13;
+                            runCheck *= 17;
                         }
                         message.channel.send({
                             embed: {
@@ -221,10 +284,10 @@ client.on('message', message => {
                     case 'hello':
                     case 'hey':
                     case 'yo':
-                        if (runCheck % 17 === 0) {
+                        if (runCheck % 19 === 0) {
                             break;
                         } else {
-                            runCheck *= 17;
+                            runCheck *= 19;
                         }
                         var randomGreeting = ['Hi there!! *^▽^*', 'Heyo! (^-^*)/', 'Hello! ・ω・'];
                         var choice = Math.round(Math.random() * (randomGreeting.length - 1));
@@ -238,10 +301,10 @@ client.on('message', message => {
 
                     case 'how':
                     case 'doing':
-                        if (runCheck % 19 === 0) {
+                        if (runCheck % 23 === 0) {
                             break;
                         } else {
-                            runCheck *= 19;
+                            runCheck *= 23;
                         }
                         var randomFeeling = ['I\'m doing well, thank you for asking! （‐＾▽＾‐）', 'I\'m good! How about yourself? ヽ(o＾▽＾o)ノ'];
                         var choice = Math.round(Math.random() * (randomFeeling.length - 1));
@@ -254,10 +317,10 @@ client.on('message', message => {
                         break;
 
                     case 'weather':
-                        if (runCheck % 23 === 0) {
+                        if (runCheck % 29 === 0) {
                             break;
                         } else {
-                            runCheck *= 23;
+                            runCheck *= 29;
                         }
                         var weatherMessage = splitMessage.join(" ");
                         if (weatherMessage.indexOf("\"") === weatherMessage.lastIndexOf("\"")) {
@@ -309,10 +372,10 @@ client.on('message', message => {
 
                     case '8ball':
                     case '8-ball':
-                        if (runCheck % 29 === 0) {
+                        if (runCheck % 31 === 0) {
                             break;
                         } else {
-                            runCheck *= 29;
+                            runCheck *= 31;
                         }
                         var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                         var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
@@ -343,10 +406,10 @@ client.on('message', message => {
                         break;
 
                     case 'minecraft':
-                        if (runCheck % 31 === 0) {
+                        if (runCheck % 37 === 0) {
                             break;
                         } else {
-                            runCheck *= 31;
+                            runCheck *= 37;
                         }
                         var address = ["ip", "25565"];
                         for (var searchVarC = 0; searchVarC < splitMessage.length; searchVarC++) {
