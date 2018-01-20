@@ -106,12 +106,12 @@ client.on('message', async message => {
     var song;
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-//            message.channel.send({
-//                embed: {
-//                    color: 16711680,
-//                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
-//                }
-//            });
+            //            message.channel.send({
+            //                embed: {
+            //                    color: 16711680,
+            //                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
+            //                }
+            //            });
             var missCount = 0;
             var runCheck = 1;
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
@@ -411,8 +411,8 @@ client.on('message', async message => {
                                             "inline": true
                                             }
                                         ],
-                                    footer : {
-                                        "text" : current.observationpoint
+                                    footer: {
+                                        "text": current.observationpoint
                                     }
                                 }
                             });
