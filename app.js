@@ -99,11 +99,13 @@ client.on('message', async message => {
     var splitMessage = step.split(" ");
     var splitMessagePreserved = message.content.toString().split(" ");
     //Song stuff uwu
-    var serverQueue = queue.get(message.guild.id);
-    var voiceChannel = message.member.voiceChannel;
-    var musicLink = "$";
-    var searchQuery = "$";
-    var song;
+    if (message.guild) {
+        var serverQueue = queue.get(message.guild.id);
+        var voiceChannel = message.member.voiceChannel;
+        var musicLink = "$";
+        var searchQuery = "$";
+        var song;
+    }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
             //            message.channel.send({
