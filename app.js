@@ -548,6 +548,15 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 41;
                         }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
+                        }
                         var musicMessage = splitMessagePreserved.join(" ");
                         if (musicMessage.search("youtube.com/") != musicMessage.search("youtu.be/")) {
                             for (var outMusicSearch = 0; outMusicSearch < splitMessagePreserved.length; outMusicSearch++) {
@@ -687,6 +696,15 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 43;
                         }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
+                        }
                         voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
@@ -715,6 +733,15 @@ client.on('message', async message => {
                             break;
                         } else {
                             runCheck *= 47;
+                        }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
                         }
                         voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
@@ -746,6 +773,15 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 53;
                         }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
+                        }
                         if (serverQueue) {
                             message.channel.send({
                                 embed: {
@@ -768,6 +804,15 @@ client.on('message', async message => {
                             break;
                         } else {
                             runCheck *= 59;
+                        }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
                         }
                         if (serverQueue) {
                             message.channel.send({
@@ -792,6 +837,15 @@ client.on('message', async message => {
                             break;
                         } else {
                             runCheck *= 61;
+                        }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
                         }
                         if (serverQueue && serverQueue.playing) {
                             serverQueue.playing = false;
@@ -824,6 +878,15 @@ client.on('message', async message => {
                             break;
                         } else {
                             runCheck *= 67;
+                        }
+                        if (!message.guild) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                                }
+                            });
+                            break;
                         }
                         if (serverQueue && !serverQueue.playing) {
                             serverQueue.playing = true;
