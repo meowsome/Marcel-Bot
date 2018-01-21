@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const Util = require('discord.js');
 const client = new Discord.Client();
 const weather = require('weather-js');
+const wolfram = require('node-wolfram');
+const Wolfram = new wolfram(process.env.WOLFRAM);
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
@@ -108,14 +110,15 @@ client.on('message', async message => {
     }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-            //            message.channel.send({
-            //                embed: {
-            //                    color: 16711680,
-            //                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
-            //                }
-            //            });
+//            message.channel.send({
+//                embed: {
+//                    color: 16711680,
+//                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
+//                }
+//            });
             var missCount = 0;
             var runCheck = 1;
+            if (step.search("weather") != -1) runCheck *= 67;
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
@@ -342,28 +345,11 @@ client.on('message', async message => {
                         });
                         break;
 
-                    case 'how':
-                    case 'doing':
+                    case 'weather':
                         if (runCheck % 23 === 0) {
                             break;
                         } else {
                             runCheck *= 23;
-                        }
-                        var randomFeeling = ['I\'m doing well, thank you for asking! （‐＾▽＾‐）', 'I\'m good! How about yourself? ヽ(o＾▽＾o)ノ'];
-                        var choice = Math.round(Math.random() * (randomFeeling.length - 1));
-                        message.channel.send({
-                            embed: {
-                                color: 3066993,
-                                description: randomFeeling[choice]
-                            }
-                        });
-                        break;
-
-                    case 'weather':
-                        if (runCheck % 29 === 0) {
-                            break;
-                        } else {
-                            runCheck *= 29;
                         }
                         var weatherMessage = splitMessage.join(" ");
                         if (weatherMessage.indexOf("\"") === weatherMessage.lastIndexOf("\"")) {
@@ -423,10 +409,10 @@ client.on('message', async message => {
 
                     case '8ball':
                     case '8-ball':
-                        if (runCheck % 31 === 0) {
+                        if (runCheck % 29 === 0) {
                             break;
                         } else {
-                            runCheck *= 31;
+                            runCheck *= 29;
                         }
                         var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                         var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
@@ -457,10 +443,10 @@ client.on('message', async message => {
                         break;
 
                     case 'minecraft':
-                        if (runCheck % 37 === 0) {
+                        if (runCheck % 31 === 0) {
                             break;
                         } else {
-                            runCheck *= 37;
+                            runCheck *= 31;
                         }
                         var address = ["ip", "25565"];
                         for (var outMinecraftSearch = 0; outMinecraftSearch < splitMessage.length; outMinecraftSearch++) {
@@ -543,10 +529,10 @@ client.on('message', async message => {
 
                     case 'music':
                     case 'play':
-                        if (runCheck % 41 === 0) {
+                        if (runCheck % 37 === 0) {
                             break;
                         } else {
-                            runCheck *= 41;
+                            runCheck *= 37;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -691,10 +677,10 @@ client.on('message', async message => {
                         break;
 
                     case 'skip':
-                        if (runCheck % 43 === 0) {
+                        if (runCheck % 41 === 0) {
                             break;
                         } else {
-                            runCheck *= 43;
+                            runCheck *= 41;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -729,10 +715,10 @@ client.on('message', async message => {
 
                     case 'stop':
                     case 'leave':
-                        if (runCheck % 47 === 0) {
+                        if (runCheck % 43 === 0) {
                             break;
                         } else {
-                            runCheck *= 47;
+                            runCheck *= 43;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -768,10 +754,10 @@ client.on('message', async message => {
 
                     case 'nowplaying':
                     case 'np':
-                        if (runCheck % 53 === 0) {
+                        if (runCheck % 47 === 0) {
                             break;
                         } else {
-                            runCheck *= 53;
+                            runCheck *= 47;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -800,10 +786,10 @@ client.on('message', async message => {
                         break;
 
                     case 'queue':
-                        if (runCheck % 59 === 0) {
+                        if (runCheck % 53 === 0) {
                             break;
                         } else {
-                            runCheck *= 59;
+                            runCheck *= 53;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -833,10 +819,10 @@ client.on('message', async message => {
                         break;
 
                     case 'pause':
-                        if (runCheck % 61 === 0) {
+                        if (runCheck % 59 === 0) {
                             break;
                         } else {
-                            runCheck *= 61;
+                            runCheck *= 59;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -874,10 +860,10 @@ client.on('message', async message => {
                         break;
 
                     case 'resume':
-                        if (runCheck % 67 === 0) {
+                        if (runCheck % 61 === 0) {
                             break;
                         } else {
-                            runCheck *= 67;
+                            runCheck *= 61;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -912,6 +898,68 @@ client.on('message', async message => {
                                 }
                             });
                         }
+                        break;
+
+                    case 'wolfram':
+                    case 'how':
+                    case 'how\'s':
+                    case 'hows':
+                    case 'do':
+                    case 'what':
+                    case 'what\'s':
+                    case 'whats':
+                    case 'where':
+                    case 'where\'s':
+                    case 'wheres':
+                    case 'why':
+                    case 'why\'s':
+                    case 'whys':
+                    case 'name':
+                    case 'define':
+                    case 'definition':
+                    case 'who':
+                    case 'calculate':
+                    case 'add':
+                    case 'subtract':
+                    case 'multiply':
+                    case 'divide':
+                    case 'solve':
+                    case 'translate':
+                        if (runCheck % 67 === 0) {
+                            break;
+                        } else {
+                            runCheck *= 67;
+                        }
+                        var wolframQuestion = splitMessagePreserved.join(" ").replace(/marcel|wolfram/gi, "");
+                        message.channel.send({
+                            embed: {
+                                color: 16312092,
+                                description: "Thinking..."
+                            }
+                        }).then(function(message) {
+                            Wolfram.query(wolframQuestion, function (err, result) {
+                                if (result.queryresult.$.success.toString() === 'true') {
+                                    message.edit({
+                                        embed: {
+                                            color: 3066993,
+                                            description: result.queryresult.pod[1].subpod[0].plaintext.toString(),
+                                            "footer": {
+                                                "text": result.queryresult.pod[0].subpod[0].plaintext.toString()
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: "Sorry, but I couldn't find anything for that! If what you said was a question, please try to rephrase it."
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                
+
                         break;
 
                     default:
