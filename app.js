@@ -908,6 +908,9 @@ client.on('message', async message => {
                     case 'what':
                     case 'what\'s':
                     case 'whats':
+                    case 'when':
+                    case 'when\'s':
+                    case 'whens':
                     case 'where':
                     case 'where\'s':
                     case 'wheres':
