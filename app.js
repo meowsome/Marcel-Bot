@@ -918,6 +918,8 @@ client.on('message', async message => {
                     case 'define':
                     case 'definition':
                     case 'who':
+                    case 'who\'s':
+                    case 'whos':
                     case 'calculate':
                     case 'add':
                     case 'subtract':
