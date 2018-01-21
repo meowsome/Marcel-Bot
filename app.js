@@ -118,7 +118,7 @@ client.on('message', async message => {
 //            });
             var missCount = 0;
             var runCheck = 1;
-            if (step.search("weather") != -1 || step.search("play" != -1)) runCheck *= 67;
+            if (step.search("weather") != -1 || step.search("play") != -1) runCheck *= 67;
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
