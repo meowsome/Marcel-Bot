@@ -740,7 +740,7 @@ client.on('message', async message => {
                             break;
                         }
                         if (serverQueue) {
-                            serverQueue.songs = [];
+                            queue.delete(guild.id);
                             serverQueue.connection.dispatcher.end();
                         } else {
                             message.channel.send({
@@ -812,7 +812,7 @@ client.on('message', async message => {
                             message.channel.send({
                                 embed: {
                                     color: 16711680,
-                                    description: "There's nothing currently playing, silly!"
+                                    description: "There are no queued songs!"
                                 }
                             });
                         }
@@ -971,7 +971,7 @@ client.on('message', async message => {
                         missCount++;
                 }
                 if (missCount === splitMessage.length) {
-                    var randomError = ['What? Hi? Hello? Somebody said my name???!?', 'Marcel is here!!!!!!', 'W-What? Sorry I was napping （´・｀）', 'Who said my nameeeeeeeeeeeeeeeee', 'Hi! I\'m here, ready to annoy you!'];
+                    var randomError = ['Why are donuts so magically delicious?', 'I like cheese', 'Space aliens :alien:', 'Going once...', 'Going twice...', 'I\'m in love with a big blue frog, and a big blue frog loves me!!!', 'Somebody\'s poisoned the waterhole!', 'Reach for the skyyyyyy!', 'Ni na ni na ni na na na na, ni na ni na ni na na na nah', 'I\'m going to go now. Good bye!', 'Don\'t forget to pack extra underwear!', 'Still tryin to be random...I\'m running out of randomness...', 'Going flying now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', 'I prefer apple pie to mathematical pi', 'I like hammers', 'I wish I was in the ground', 'Thou shalt not kill', 'Ass', 'I love u', 'DO A BACK FLIP!!!', 'Eat your foot', 'I hate the green flashing light', 'Oh no! You\'re going to speak again, aren\'t you?', 'But my tree only hit the car in self-defence!', 'Don\'t mess with me! I have a stick!', 'Get high, climb a tree', 'Think of gingerbread men: are they delicious holiday treats or just another way for children to show off their cannibalism?', 'My eraser will kick your eraser\'s ass!', 'My mom said that I am cool because I don\'t do drugs', 'I am pretending to be a tomato', 'The banana has legs!!!!!!!!!', 'Back off! The ice cream is mine!', 'I am being attacked by a giant screaming rainbow! Oh, sorry, it was just technical difficulties.', 'Even my issues have issues', 'This is Bob. Bob likes you. Bob likes sharp things. I suggest you run from Bob.', 'I like eggs', 'My eyesbrows died', 'I am a girl now', 'I am a boy now', 'How many genders are there?', 'I am so blue I\'m greener than purple.', 'I stepped on a Corn Flake, now I\'m a cereal killer', 'On a scale from one to ten what is your favourite colour of the alphabet?', 'Everyday a grape licks a friendly cow', 'If your canoe is stuck in a tree with the headlights on, how many pancakes does it take to get to the moon?', 'Cheese grader shaved my butt skin off', 'I am a Leafeon :)', 'My nose is a communist', 'People are like slinkies...Basically useless and yet so amusing to watch fall down the stairs', 'I hate mud when it\'s muddy', 'I am in shape. Round is a shape', 'Please touch the butt Nemo', 'Touch my butt', 'Groovy', 'Moistness', 'Touch meeeeeeee', '1f you c4n r34d 7h15, you r34lly n33d 2 g37 l41d', 'My hair hurts', 'It\'s those darned aliens', 'Polar bears sleep with penguins, everyone knows that', 'Winky face emoji', 'My teeth are itchy', 'AAAAAADVENTURE TIIIIME', 'Can\'t touch this!', 'Put the following 5 animals in the order of your preference: Cow, tiger, sheep, horse, pig', 'What\'s your favorite color?', 'Victor yelled at a sausage horrifyingly.', 'Click to run adobe flash player', 'I licked a phone in Church because I have a secret fetish.', 'Oh my!!! I appear to have dropped my elephant!', 'Get out of my kitchen!!!!!!!!!!!', 'Who you callin traffic pole??', 'Mwahahahahha', 'Homework can be done faster and more efficiently if you own a neon green cat', 'You can use tail of squirrel to wash glasses', 'Mike Wazowski', 'Hitler was in love with Jennifer Aniston, so Japan joined in the world war.', 'Fork is a weird name for something you eat with. Why do they call it a fork? Why not spear or poker?'];
                     var choice = Math.round(Math.random() * (randomError.length - 1));
                     message.channel.send({
                         embed: {
@@ -1000,7 +1000,7 @@ client.on('message', async message => {
                 message.channel.send({
                     embed: {
                         color: 3066993,
-                        title: `:arrow_forward:   Now playing **${song.title}**`,
+                        title: `:arrow_forward: Now playing **${song.title}**`,
                         description: song.description,
                         "footer": {
                             "text": `Duration: ${song.duration}`
@@ -1015,7 +1015,7 @@ client.on('message', async message => {
                     message.channel.send({
                         embed: {
                             color: 3066993,
-                            title: `:track_next:   The song **${song.title}** has ended`,
+                            title: `:track_next: The song **${song.title}** has ended`,
                             description: song.description,
                             "footer": {
                                 "text": `Duration: ${song.duration}`
@@ -1025,6 +1025,17 @@ client.on('message', async message => {
                             }
                         }
                     });
+                    if (voiceChannel.members.size === 1) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like there's nobody else in the voice channel except for me. I've gone ahead and left the voice channel, and deleted the queue."
+                            }
+                        });
+                        if (serverQueue) queue.delete(guild.id);
+                        serverQueue.voiceChannel.leave();
+                        return;
+                    }
                     serverQueue.songs.shift();
                     play(guild, serverQueue.songs[0]);
                 }, 200);
