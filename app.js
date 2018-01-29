@@ -740,7 +740,7 @@ client.on('message', async message => {
                             break;
                         }
                         if (serverQueue) {
-                            queue.delete(guild.id);
+                            serverQueue.songs = [];
                             serverQueue.connection.dispatcher.end();
                         } else {
                             message.channel.send({
