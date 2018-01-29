@@ -9,7 +9,7 @@ const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
 const Cleverbot = require("cleverbot.io");
-const cleverbot = new Cleverbot(process.env.CLEVERBOT-NAME, process.env.CLEVERBOT-API);
+const cleverbot = new Cleverbot(process.env.CLEVERBOT_NAME, process.env.CLEVERBOT_API);
 cleverbot.setNick("Marcel");
 
 client.on('ready', () => {
