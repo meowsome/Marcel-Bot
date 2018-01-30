@@ -8,9 +8,6 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
-const Cleverbot = require("cleverbot.io");
-const cleverbot = new Cleverbot(process.env.CLEVERBOT_NAME, process.env.CLEVERBOT_API);
-cleverbot.setNick("Marcel");
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -37,15 +34,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-        client.channels.get('397862894005387287').send({
-            embed: {
-                color: 3066993,
-                description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-                "footer": {
-                    "text": time + " | " + date
+            client.channels.get('397862894005387287').send({
+                embed: {
+                    color: 3066993,
+                    description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+                    "footer": {
+                        "text": time + " | " + date
+                    }
                 }
-            }
-        });
+            });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -974,17 +971,8 @@ client.on('message', async message => {
                     message.channel.send({
                         embed: {
                             color: 16312092,
-                            description: "Thinking..."
+                            description: "Cleverbot capabilities would be here, but the developer got angry and gave up since it wouldn't cooperate. :( Darn! Maybe soon?"
                         }
-                    }).then(function (message) {
-                        cleverbot.ask(cleverbotQuestion, function (err, response) {
-                            message.edit({
-                                embed: {
-                                    color: 3066993,
-                                    description: response
-                                }
-                            });
-                        });
                     });
                 }
             }
