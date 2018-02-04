@@ -8,11 +8,15 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
+const Cleverbot = require('cleverbot.io');
+const cleverbot = new Cleverbot(process.env.CLEVERBOTNAME, process.env.CLEVERBOTKEY);
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
     client.user.setGame('Say my name and "help" for help');
-
+    cleverbot.setNick("marcelsession");
+    cleverbot.create(function (err, session) {});
+    
     var today = new Date();
     var minutes = today.getMinutes();
     var hours = today.getHours();
@@ -34,15 +38,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-            client.channels.get('397862894005387287').send({
-                embed: {
-                    color: 3066993,
-                    description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-                    "footer": {
-                        "text": time + " | " + date
-                    }
-                }
-            });
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+            "footer": {
+                "text": time + " | " + date
+            }
+        }
+    });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -118,7 +122,7 @@ client.on('message', async message => {
 //            });
             var missCount = 0;
             var runCheck = 1;
-            if (step.search("weather") != -1 || step.search("play") != -1) runCheck *= 67;
+            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1) runCheck *= 67;
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
@@ -950,12 +954,34 @@ client.on('message', async message => {
                                         }
                                     });
                                 } else {
-                                    message.edit({
-                                        embed: {
-                                            color: 16711680,
-                                            description: "Sorry, but I couldn't find anything for that! If what you said was a question, please try to rephrase it."
-                                        }
-                                    });
+                                    var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
+                    message.edit({
+                        embed: {
+                            color: 16312092,
+                            description: "Still thinking..."
+                        }
+                    }).then(function (message) {
+                        try {
+                            cleverbot.ask(cleverbotQuestion, function (err, response) {
+                                message.edit({
+                                    embed: {
+                                        color: 3066993,
+                                        description: response,
+                                        "footer": {
+                                            "text": "Fact question keyword detected but no response found, so funny response was given instead"
+                                        },
+                                    }
+                                });
+                            });
+                        } catch (e) {
+                            message.edit({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Cleverbot API didn't respond... That means I can't give you a funny reply to your message! :cry:"
+                                }
+                            });
+                        }
+                    });
                                 }
                             });
                         });
@@ -971,7 +997,25 @@ client.on('message', async message => {
                     message.channel.send({
                         embed: {
                             color: 16312092,
-                            description: "Cleverbot capabilities would be here, but the developer got angry and gave up since it wouldn't cooperate. :( Darn! Maybe soon?"
+                            description: "Thinking..."
+                        }
+                    }).then(function (message) {
+                        try {
+                            cleverbot.ask(cleverbotQuestion, function (err, response) {
+                                message.edit({
+                                    embed: {
+                                        color: 3066993,
+                                        description: response
+                                    }
+                                });
+                            });
+                        } catch (e) {
+                            message.edit({
+                                embed: {
+                                    color: 16711680,
+                                    description: "Cleverbot API didn't respond... That means I can't give you a funny reply to your message! :cry:"
+                                }
+                            });
                         }
                     });
                 }
