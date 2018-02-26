@@ -8,15 +8,17 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
-const Cleverbot = require('cleverbot.io');
-const cleverbot = new Cleverbot(process.env.CLEVERBOTNAME, process.env.CLEVERBOTKEY);
+const Cleverbot = require('better-cleverbot-io');
+const cleverbot = new Cleverbot({
+    user: process.env.CLEVERBOTNAME,
+    key: process.env.CLEVERBOTKEY,
+    nick: 'marcelsession'
+});
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
     client.user.setGame('Say my name and "help" for help');
-    cleverbot.setNick("marcelsession");
-    cleverbot.create(function (err, session) {});
-    
+
     var today = new Date();
     var minutes = today.getMinutes();
     var hours = today.getHours();
@@ -114,12 +116,12 @@ client.on('message', async message => {
     }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-//            message.channel.send({
-//                embed: {
-//                    color: 16711680,
-//                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
-//                }
-//            });
+            //            message.channel.send({
+            //                embed: {
+            //                    color: 16711680,
+            //                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
+            //                }
+            //            });
             var missCount = 0;
             var runCheck = 1;
             if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1) runCheck *= 67;
@@ -955,38 +957,33 @@ client.on('message', async message => {
                                     });
                                 } else {
                                     var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
-                    message.edit({
-                        embed: {
-                            color: 16312092,
-                            description: "Still thinking..."
-                        }
-                    }).then(function (message) {
-                        try {
-                            cleverbot.ask(cleverbotQuestion, function (err, response) {
-                                message.edit({
-                                    embed: {
-                                        color: 3066993,
-                                        description: response,
-                                        "footer": {
-                                            "text": "Fact question keyword detected but no response found, so funny response was given instead"
-                                        },
-                                    }
-                                });
-                            });
-                        } catch (e) {
-                            message.edit({
-                                embed: {
-                                    color: 16711680,
-                                    description: "Cleverbot API didn't respond... That means I can't give you a funny reply to your message! :cry:"
-                                }
-                            });
-                        }
-                    });
+                                    message.edit({
+                                        embed: {
+                                            color: 16312092,
+                                            description: "Still thinking..."
+                                        }
+                                    }).then(function (message) {
+                                        cleverbot.create().then(() => {
+                                            cleverbot.ask(cleverbotQuestion).then((response => {
+                                                message.edit({
+                                                    embed: {
+                                                        color: 3066993,
+                                                        description: response
+                                                    }
+                                                });
+                                            }));
+                                        }).catch(err => {
+                                            message.edit({
+                                                embed: {
+                                                    color: 16711680,
+                                                    description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
+                                                }
+                                            });
+                                        });
+                                    });
                                 }
                             });
                         });
-
-
                         break;
 
                     default:
@@ -1000,24 +997,25 @@ client.on('message', async message => {
                             description: "Thinking..."
                         }
                     }).then(function (message) {
-                        try {
-                            cleverbot.ask(cleverbotQuestion, function (err, response) {
+                        cleverbot.create().then(() => {
+                            cleverbot.ask(cleverbotQuestion).then((response => {
                                 message.edit({
                                     embed: {
                                         color: 3066993,
                                         description: response
                                     }
                                 });
-                            });
-                        } catch (e) {
+                            }));
+                        }).catch(err => {
                             message.edit({
                                 embed: {
                                     color: 16711680,
-                                    description: "Cleverbot API didn't respond... That means I can't give you a funny reply to your message! :cry:"
+                                    description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
                                 }
                             });
-                        }
+                        });
                     });
+
                 }
             }
         }
