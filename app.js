@@ -14,6 +14,8 @@ const cleverbot = new Cleverbot({
     key: process.env.CLEVERBOTKEY,
     nick: 'marcelsession'
 });
+const RSS = require('rss-parser');
+const rss = new RSS();
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -40,15 +42,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-    client.channels.get('397862894005387287').send({
-        embed: {
-            color: 3066993,
-            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-            "footer": {
-                "text": time + " | " + date
+        client.channels.get('397862894005387287').send({
+            embed: {
+                color: 3066993,
+                description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+                "footer": {
+                    "text": time + " | " + date
+                }
             }
-        }
-    });
+        });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -116,15 +118,15 @@ client.on('message', async message => {
     }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-            //            message.channel.send({
-            //                embed: {
-            //                    color: 16711680,
-            //                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
-            //                }
-            //            });
+//            message.channel.send({
+//                embed: {
+//                    color: 16711680,
+//                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
+//                }
+//            });
             var missCount = 0;
             var runCheck = 1;
-            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1) runCheck *= 67;
+            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
@@ -983,6 +985,22 @@ client.on('message', async message => {
                                     });
                                 }
                             });
+                        });
+                        break;
+
+                    case 'news':
+                        if (runCheck % 71 === 0) {
+                            break;
+                        } else {
+                            runCheck *= 71;
+                        }
+                        var feed = await rss.parseURL('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss');
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                title: "News",
+                                description: `- [${feed.items[0].title}](${feed.items[0].link})\n- [${feed.items[1].title}](${feed.items[1].link})\n- [${feed.items[2].title}](${feed.items[2].link})\n- [${feed.items[3].title}](${feed.items[3].link})\n- [${feed.items[4].title}](${feed.items[4].link})\n- [${feed.items[5].title}](${feed.items[5].link})`
+                            }
                         });
                         break;
 
