@@ -42,15 +42,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-        client.channels.get('397862894005387287').send({
-            embed: {
-                color: 3066993,
-                description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-                "footer": {
-                    "text": time + " | " + date
+            client.channels.get('397862894005387287').send({
+                embed: {
+                    color: 3066993,
+                    description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+                    "footer": {
+                        "text": time + " | " + date
+                    }
                 }
-            }
-        });
+            });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -131,6 +131,7 @@ client.on('message', async message => {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
                     case 'instructions':
+                    case 'commands':
                         if (runCheck % 2 === 0) {
                             break;
                         } else {
@@ -139,7 +140,7 @@ client.on('message', async message => {
                         message.channel.send({
                             embed: {
                                 color: 3066993,
-                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, let's see the weather in Denver, Colorado\nMarcel, play Surf by Hyper Potions\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval (Tag somebody to see their avatar too!)\n• User Information (Again, tag somebody for their info)\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• YouTube music playback (play/queue/skip/stop/pause/resume/np)\n• Fact-based question search\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
+                                description: "Hiya! Nice to meet ya, I'm Marcel. Here are some simple instructions for how to efficiently interact with me.\n\nI work much like how you'd speak to a human in a normal conversation instead of just entering commands with a prefix and expecting an output.\n\nHere are some examples of things you could say to me:\n```\nHey Marcel, how are you today?\nMarcel, let's see the weather in Denver, Colorado\nMarcel, play Surf by Hyper Potions\nMarcel, show me the status of the Minecraft server mineplex.com```\nAll you have to do is send a message that contains my name and what you want me to do, and I'll try my best to do that for you!\n\nHere is a list of my features so far:\n• Avatar retrieval (Tag somebody to see their avatar too!)\n• User Information (Again, tag somebody for their info)\n• Magic 8-Ball\n• Weather (Use quotations [\"] around the location for a more precise result!)\n• Minecraft server status\n• YouTube music playback (play/queue/skip/stop/pause/resume/np)\n• Fact-based question search\n•Trending news stories\n• And more soon to come!\n\n[Click here to visit my website if you need any more help!](http://marcel.vulpix.pw/#usage)"
                             }
                         });
                         break;
@@ -225,8 +226,6 @@ client.on('message', async message => {
                         break;
 
                     case 'profile':
-                    case 'info':
-                    case 'information':
                     case 'user':
                         if (runCheck % 11 === 0) {
                             break;
