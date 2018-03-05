@@ -42,15 +42,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-            client.channels.get('397862894005387287').send({
-                embed: {
-                    color: 3066993,
-                    description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-                    "footer": {
-                        "text": time + " | " + date
+                client.channels.get('397862894005387287').send({
+                    embed: {
+                        color: 3066993,
+                        description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+                        "footer": {
+                            "text": time + " | " + date
+                        }
                     }
-                }
-            });
+                });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -114,14 +114,13 @@ client.on('message', async message => {
         var voiceChannel = message.member.voiceChannel;
         var musicLink = "$";
         var searchQuery = "$";
-        var song;
     }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
 //            message.channel.send({
 //                embed: {
 //                    color: 16711680,
-//                    description: "**Warning**: I am currently running in two sessions because I am being worked on by the developers! You'll see some weird stuff happening, but you can still use me for now."
+//                    description: "**Warning**: I am currently being developed! You'll see some weird stuff happening, but you can still use me for now."
 //                }
 //            });
             var missCount = 0;
@@ -626,7 +625,7 @@ client.on('message', async message => {
                         musicLink = "$";
                         searchQuery = "$";
                         if (video.duration.hours > 0) {
-                            song = {
+                            var song = {
                                 id: video.id,
                                 title: video.title,
                                 description: `${video.description.substring(0,100)}...`,
@@ -635,7 +634,7 @@ client.on('message', async message => {
                                 duration: `${video.duration.hours}:${video.duration.minutes}:${video.duration.seconds}`
                             };
                         } else {
-                            song = {
+                            var song = {
                                 id: video.id,
                                 title: video.title,
                                 description: `${video.description.substring(0,100)}...`,
@@ -660,7 +659,7 @@ client.on('message', async message => {
                                 queueConstruct.connection = connection;
                                 play(message.guild, queueConstruct.songs[0]);
                             } catch (error) {
-                                console.error(error);
+                                console.log(error);
                                 queue.delete(message.guild.id);
                                 return message.channel.send({
                                     embed: {
@@ -1047,9 +1046,7 @@ client.on('message', async message => {
             queue.delete(guild.id);
             return;
         }
-        const dispatcher = serverQueue.connection.playStream(ytdl(song.url, {
-                filter: "audioonly"
-            }))
+        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
             .on('start', () => {
                 message.channel.send({
                     embed: {
@@ -1100,7 +1097,7 @@ client.on('message', async message => {
                         description: "Something went wrong with the song playback, sorry about that!"
                     }
                 });
-                console.error(error);
+                console.log(error);
             });
         dispatcher.setVolumeLogarithmic(5 / 5);
     }
