@@ -945,7 +945,14 @@ client.on('message', async message => {
                             }
                         }).then(function (message) {
                             Wolfram.query(wolframQuestion, function (err, result) {
-                                if (result.queryresult.$.success.toString() === 'true') {
+                                if (!result) {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: "Something went wrong with my connection to the Wolfram Alpha site :cry: I'll start making legitimate responses to your messages once it starts working again."
+                                        }
+                                    });
+                                } else if (result.queryresult.$.success.toString() === 'true') {
                                     message.edit({
                                         embed: {
                                             color: 3066993,
@@ -956,31 +963,8 @@ client.on('message', async message => {
                                         }
                                     });
                                 } else {
-                                    var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
-                                    message.edit({
-                                        embed: {
-                                            color: 16312092,
-                                            description: "Still thinking..."
-                                        }
-                                    }).then(function (message) {
-                                        cleverbot.create().then(() => {
-                                            cleverbot.ask(cleverbotQuestion).then((response => {
-                                                message.edit({
-                                                    embed: {
-                                                        color: 3066993,
-                                                        description: response
-                                                    }
-                                                });
-                                            }));
-                                        }).catch(err => {
-                                            message.edit({
-                                                embed: {
-                                                    color: 16711680,
-                                                    description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
-                                                }
-                                            });
-                                        });
-                                    });
+                                    message.delete(1);
+                                    cleverbotWork();
                                 }
                             });
                         });
@@ -1006,37 +990,50 @@ client.on('message', async message => {
                         missCount++;
                 }
                 if (missCount === splitMessage.length) {
-                    var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
-                    message.channel.send({
-                        embed: {
-                            color: 16312092,
-                            description: "Thinking..."
-                        }
-                    }).then(function (message) {
-                        cleverbot.create().then(() => {
-                            cleverbot.ask(cleverbotQuestion).then((response => {
-                                message.edit({
-                                    embed: {
-                                        color: 3066993,
-                                        description: response
-                                    }
-                                });
-                            }));
-                        }).catch(err => {
-                            message.edit({
-                                embed: {
-                                    color: 16711680,
-                                    description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
-                                }
-                            });
-                        });
-                    });
-
+                    cleverbotWork();
                 }
             }
         }
     }
 
+    function cleverbotWork() {
+        var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
+        message.channel.send({
+            embed: {
+                color: 16312092,
+                description: "Thinking..."
+            }
+        }).then(function (message) {
+            cleverbot.create().then(() => {
+                cleverbot.ask(cleverbotQuestion).then(response => {
+                    message.edit({
+                        embed: {
+                            color: 3066993,
+                            description: response
+                        }
+                    });
+                }).catch(err => {
+                    message.edit({
+                        embed: {
+                            color: 16711680,
+                            description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
+                        }
+                    });
+                });
+            }).catch(err => {
+                message.edit({
+                    embed: {
+                        color: 16711680,
+                        description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
+                    }
+                });
+            });
+        });
+    }
+    
+    
+    
+    
     function play(guild, song) {
         const serverQueue = queue.get(guild.id);
         if (!song) {
