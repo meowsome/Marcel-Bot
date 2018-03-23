@@ -42,15 +42,15 @@ client.on('ready', () => {
     time = hours + ':' + minutes;
     date = month + '/' + date + '/' + year;
 
-                client.channels.get('397862894005387287').send({
-                    embed: {
-                        color: 3066993,
-                        description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-                        "footer": {
-                            "text": time + " | " + date
-                        }
-                    }
-                });
+    client.channels.get('397862894005387287').send({
+        embed: {
+            color: 3066993,
+            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
+            "footer": {
+                "text": time + " | " + date
+            }
+        }
+    });
 
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
@@ -364,7 +364,7 @@ client.on('message', async message => {
                             search: searchTerm,
                             degreeType: 'F'
                         }, function (err, result) {
-                            if (!result) {
+                            if (!result || result.length.toString() < 4) {
                                 message.channel.send({
                                     embed: {
                                         color: 16711680,
@@ -384,26 +384,50 @@ client.on('message', async message => {
                             }
                             var current = result[0].current;
                             var location = result[0].location;
+                            var weatherReactionOutput = "";
+                            if (current.windspeed.slice(0,1) >= 20) {
+                                weatherReactionOutput = ". Looks pretty windy out there!";
+                            } else if (current.skytext === "Light Rain" || current.skytext === "Rain" ) {
+                                weatherReactionOutput = ". Might want a raincoat!";
+                            } else if (current.temperature >= 85 ) {
+                                weatherReactionOutput = ". Looks pretty hot!";
+                            } else if (current.temperature <= 32 ) {
+                                weatherReactionOutput = ". Brr!";
+                            } else if (current.temperature <= 55 && current.temperature >= 33) {
+                                weatherReactionOutput = ". A little bit chilly!";
+                            } else if (current.temperature <= 84 && current.temperature >= 56) {
+                                weatherReactionOutput = ". Seems pretty nice out!";
+                            }
                             message.channel.send({
                                 embed: {
                                     color: 3066993,
-                                    description: `**${current.skytext}**`,
+                                    description: `It's currently **${current.temperature}°F** and **${current.skytext}**${weatherReactionOutput}`,
                                     thumbnail: {
                                         "url": current.imageUrl
                                     },
                                     fields: [{
-                                            name: "Temperature",
-                                            value: `${current.temperature}°F    ${Math.round((current.temperature -32) * 5 / 9)}°C`,
-                                            "inline": true
+                                                name: "Temperature",
+                                                value: `${current.temperature}°F (${Math.round((current.temperature -32) * 5 / 9)}°C)`,
+                                                "inline": true
                                             },
-                                        {
-                                            name: "Feels Like",
-                                            value: `${current.feelslike}°F    ${Math.round((current.feelslike -32) * 5 / 9)}°C`,
-                                            "inline": true
+                                            {
+                                                name: "Feels Like",
+                                                value: `${current.feelslike}°F (${Math.round((current.feelslike -32) * 5 / 9)}°C)`,
+                                                "inline": true
+                                            },
+                                            {
+                                                name: "Wind Speed",
+                                                value: current.windspeed,
+                                                "inline": true
+                                            },
+                                            {
+                                                name: "Humidity",
+                                                value: `${current.humidity}%`,
+                                                "inline": true
                                             }
                                         ],
                                     footer: {
-                                        "text": current.observationpoint
+                                        "text": location.name
                                     }
                                 }
                             });
@@ -419,7 +443,6 @@ client.on('message', async message => {
                         }
                         var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                         var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
-
                         var choice = Math.round(Math.random() * (eightBallResponses.length - 1));
                         var request = require('request');
                         var url = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=%27+' + simpleResponses[choice];
@@ -995,7 +1018,9 @@ client.on('message', async message => {
             }
         }
     }
-
+    
+    
+    
     function cleverbotWork() {
         var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
         message.channel.send({
@@ -1100,4 +1125,4 @@ client.on('message', async message => {
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN;
