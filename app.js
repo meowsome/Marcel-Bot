@@ -368,7 +368,7 @@ client.on('message', async message => {
                                 message.channel.send({
                                     embed: {
                                         color: 16711680,
-                                        description: 'Please enter a valid location or zip code.'
+                                        description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
                                     }
                                 });
                                 return;
@@ -377,7 +377,7 @@ client.on('message', async message => {
                                 message.channel.send({
                                     embed: {
                                         color: 16711680,
-                                        description: 'Please enter a valid location or zip code.'
+                                        description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
                                     }
                                 });
                                 return;
@@ -385,13 +385,13 @@ client.on('message', async message => {
                             var current = result[0].current;
                             var location = result[0].location;
                             var weatherReactionOutput = "";
-                            if (current.windspeed.slice(0,1) >= 20) {
-                                weatherReactionOutput = ". Looks pretty windy out there!";
-                            } else if (current.skytext === "Light Rain" || current.skytext === "Rain" ) {
+                            if (current.windspeed.slice(0, 2) >= 15) {
+                                weatherReactionOutput = ". Looks kinda windy out there!";
+                            } else if (current.skytext === "Light Rain" || current.skytext === "Rain") {
                                 weatherReactionOutput = ". Might want a raincoat!";
-                            } else if (current.temperature >= 85 ) {
+                            } else if (current.temperature >= 85) {
                                 weatherReactionOutput = ". Looks pretty hot!";
-                            } else if (current.temperature <= 32 ) {
+                            } else if (current.temperature <= 32) {
                                 weatherReactionOutput = ". Brr!";
                             } else if (current.temperature <= 55 && current.temperature >= 33) {
                                 weatherReactionOutput = ". A little bit chilly!";
@@ -406,24 +406,24 @@ client.on('message', async message => {
                                         "url": current.imageUrl
                                     },
                                     fields: [{
-                                                name: "Temperature",
-                                                value: `${current.temperature}°F (${Math.round((current.temperature -32) * 5 / 9)}°C)`,
-                                                "inline": true
+                                            name: "Temperature",
+                                            value: `${current.temperature}°F (${Math.round((current.temperature -32) * 5 / 9)}°C)`,
+                                            "inline": true
                                             },
-                                            {
-                                                name: "Feels Like",
-                                                value: `${current.feelslike}°F (${Math.round((current.feelslike -32) * 5 / 9)}°C)`,
-                                                "inline": true
+                                        {
+                                            name: "Feels Like",
+                                            value: `${current.feelslike}°F (${Math.round((current.feelslike -32) * 5 / 9)}°C)`,
+                                            "inline": true
                                             },
-                                            {
-                                                name: "Wind Speed",
-                                                value: current.windspeed,
-                                                "inline": true
+                                        {
+                                            name: "Wind Speed",
+                                            value: current.windspeed,
+                                            "inline": true
                                             },
-                                            {
-                                                name: "Humidity",
-                                                value: `${current.humidity}%`,
-                                                "inline": true
+                                        {
+                                            name: "Humidity",
+                                            value: `${current.humidity}%`,
+                                            "inline": true
                                             }
                                         ],
                                     footer: {
@@ -972,7 +972,7 @@ client.on('message', async message => {
                                     message.edit({
                                         embed: {
                                             color: 16711680,
-                                            description: "Something went wrong with my connection to the Wolfram Alpha site :cry: I'll start making legitimate responses to your messages once it starts working again."
+                                            description: "Sorry, something went wrong! 〒﹏〒  [Click here to learn more](http://marcel.vulpix.pw/#wolfram_error)"
                                         }
                                     });
                                 } else if (result.queryresult.$.success.toString() === 'true') {
@@ -1018,9 +1018,9 @@ client.on('message', async message => {
             }
         }
     }
-    
-    
-    
+
+
+
     function cleverbotWork() {
         var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
         message.channel.send({
@@ -1038,27 +1038,36 @@ client.on('message', async message => {
                         }
                     });
                 }).catch(err => {
-                    message.edit({
-                        embed: {
-                            color: 16711680,
-                            description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
-                        }
+                    cleverbot.ask(cleverbotQuestion).then(response => {
+                        message.edit({
+                            embed: {
+                                color: 3066993,
+                                description: response
+                            }
+                        });
+                    }).catch(err => {
+                        message.edit({
+                            embed: {
+                                color: 16711680,
+                                description: "Sorry, something went wrong! 〒﹏〒 [Click here to learn more](http://marcel.vulpix.pw/#cleverbot_error)"
+                            }
+                        });
                     });
                 });
             }).catch(err => {
                 message.edit({
                     embed: {
                         color: 16711680,
-                        description: "Something went wrong with my connection to my source of witty responses :cry: I'll start making legitimate responses to your messages once it starts working again."
+                        description: "Sorry, something went wrong! 〒﹏〒  [Click here to learn more](http://marcel.vulpix.pw/#cleverbot_error)"
                     }
                 });
             });
         });
     }
-    
-    
-    
-    
+
+
+
+
     function play(guild, song) {
         const serverQueue = queue.get(guild.id);
         if (!song) {
