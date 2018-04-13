@@ -19,7 +19,13 @@ const rss = new RSS();
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
-    client.user.setGame('Say my name and "help" for help');
+    
+    client.user.setPresence({
+        game: {
+            name: 'Say my name and "help" for help',
+            type: 0
+        }
+    });
 
     var today = new Date();
     var minutes = today.getMinutes();
