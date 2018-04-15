@@ -1040,7 +1040,7 @@ client.on('message', async message => {
                         message.edit({
                             embed: {
                                 color: 3066993,
-                                description: txtgen.sentence()
+                                description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                             }
                         });
                     });
@@ -1049,7 +1049,7 @@ client.on('message', async message => {
                 message.edit({
                     embed: {
                         color: 3066993,
-                        description: txtgen.sentence()
+                        description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                     }
                 });
             });
