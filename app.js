@@ -15,7 +15,7 @@ const cleverbot = new Cleverbot({
     nick: 'marcelsession'
 });
 //const rss = require('feed-to-json');
-const txtgen = require('txtgen');
+//const txtgen = require('txtgen');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -1040,7 +1040,7 @@ client.on('message', async message => {
                         message.edit({
                             embed: {
                                 color: 3066993,
-                                description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
+                                description: ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                             }
                         });
                     });
@@ -1049,7 +1049,7 @@ client.on('message', async message => {
                 message.edit({
                     embed: {
                         color: 3066993,
-                        description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
+                        description: ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                     }
                 });
             });
