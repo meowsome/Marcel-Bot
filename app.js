@@ -14,8 +14,8 @@ const cleverbot = new Cleverbot({
     key: process.env.CLEVERBOTKEY,
     nick: 'marcelsession'
 });
-//const rss = require('feed-to-json');
-//const txtgen = require('txtgen');
+const rss = require('feed-to-json');
+const txtgen = require('txtgen');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -976,29 +976,29 @@ client.on('message', async message => {
                         });
                         break;
 
-//                    case 'news':
-//                        if (runCheck % 71 === 0) {
-//                            break;
-//                        } else {
-//                            runCheck *= 71;
-//                        }
-//                        message.channel.send({
-//                            embed: {
-//                                color: 16312092,
-//                                description: loadingLines[choice]
-//                            }
-//                        }).then(function (message) {
-//                            rss.load('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss', function (err, rss) {
-//                                message.edit({
-//                                    embed: {
-//                                        color: 3066993,
-//                                        title: "News",
-//                                        description: `- [${rss.items[0].title}](${rss.items[0].link})\n- [${rss.items[1].title}](${rss.items[1].link})\n- [${rss.items[2].title}](${rss.items[2].link})\n- [${rss.items[3].title}](${rss.items[3].link})\n- [${rss.items[4].title}](${rss.items[4].link})\n- [${rss.items[5].title}](${rss.items[5].link})`
-//                                    }
-//                                });
-//                            });
-//                        });
-//                        break;
+                    case 'news':
+                        if (runCheck % 71 === 0) {
+                            break;
+                        } else {
+                            runCheck *= 71;
+                        }
+                        message.channel.send({
+                            embed: {
+                                color: 16312092,
+                                description: loadingLines[choice]
+                            }
+                        }).then(function (message) {
+                            rss.load('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss', function (err, rss) {
+                                message.edit({
+                                    embed: {
+                                        color: 3066993,
+                                        title: "News",
+                                        description: `- [${rss.items[0].title}](${rss.items[0].link})\n- [${rss.items[1].title}](${rss.items[1].link})\n- [${rss.items[2].title}](${rss.items[2].link})\n- [${rss.items[3].title}](${rss.items[3].link})\n- [${rss.items[4].title}](${rss.items[4].link})\n- [${rss.items[5].title}](${rss.items[5].link})`
+                                    }
+                                });
+                            });
+                        });
+                        break;
 
                     default:
                         missCount++;
@@ -1040,7 +1040,7 @@ client.on('message', async message => {
                         message.edit({
                             embed: {
                                 color: 3066993,
-                                description: ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
+                                description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                             }
                         });
                     });
@@ -1049,7 +1049,7 @@ client.on('message', async message => {
                 message.edit({
                     embed: {
                         color: 3066993,
-                        description: ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
+                        description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
                     }
                 });
             });
