@@ -14,12 +14,12 @@ const cleverbot = new Cleverbot({
     key: process.env.CLEVERBOTKEY,
     nick: 'marcelsession'
 });
-const RSS = require('rss-parser');
-const rss = new RSS();
+const rss = require('feed-to-json');
+const txtgen = require('txtgen');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
-    
+
     client.user.setPresence({
         game: {
             name: 'Say my name and "help" for help',
@@ -27,34 +27,10 @@ client.on('ready', () => {
         }
     });
 
-    var today = new Date();
-    var minutes = today.getMinutes();
-    var hours = today.getHours();
-    var date = today.getDate();
-    var month = today.getMonth() + 1;
-    var year = today.getFullYear();
-    if (date < 10) {
-        date = '0' + date
-    }
-    if (month < 10) {
-        month = '0' + month
-    }
-    if (hours < 10) {
-        hours = '0' + hours
-    }
-    if (minutes < 10) {
-        minutes = '0' + minutes
-    }
-    time = hours + ':' + minutes;
-    date = month + '/' + date + '/' + year;
-
     client.channels.get('397862894005387287').send({
         embed: {
             color: 3066993,
-            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`,
-            "footer": {
-                "text": time + " | " + date
-            }
+            description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
         }
     });
 
@@ -129,6 +105,11 @@ client.on('message', async message => {
 //                    description: "**Warning**: I am currently being developed! You'll see some weird stuff happening, but you can still use me for now."
 //                }
 //            });
+
+            //Loading Lines
+            var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
+            var choice = Math.round(Math.random() * (loadingLines.length - 1));
+
             var missCount = 0;
             var runCheck = 1;
             if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
@@ -336,29 +317,11 @@ client.on('message', async message => {
                         });
                         break;
 
-                    case 'hi':
-                    case 'hello':
-                    case 'hey':
+                    case 'weather':
                         if (runCheck % 19 === 0) {
                             break;
                         } else {
                             runCheck *= 19;
-                        }
-                        var randomGreeting = ['Hi there!! *^▽^*', 'Heyo! (^-^*)/', 'Hello! ・ω・'];
-                        var choice = Math.round(Math.random() * (randomGreeting.length - 1));
-                        message.channel.send({
-                            embed: {
-                                color: 3066993,
-                                description: randomGreeting[choice]
-                            }
-                        });
-                        break;
-
-                    case 'weather':
-                        if (runCheck % 23 === 0) {
-                            break;
-                        } else {
-                            runCheck *= 23;
                         }
                         var weatherMessage = splitMessage.join(" ");
                         if (weatherMessage.indexOf("\"") === weatherMessage.lastIndexOf("\"")) {
@@ -366,86 +329,93 @@ client.on('message', async message => {
                         } else {
                             var searchTerm = weatherMessage.slice(weatherMessage.indexOf("\"") + 1, weatherMessage.lastIndexOf("\""));
                         }
-                        weather.find({
-                            search: searchTerm,
-                            degreeType: 'F'
-                        }, function (err, result) {
-                            if (!result || result.length.toString() < 4) {
-                                message.channel.send({
-                                    embed: {
-                                        color: 16711680,
-                                        description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
-                                    }
-                                });
-                                return;
+                        message.channel.send({
+                            embed: {
+                                color: 16312092,
+                                description: loadingLines[choice]
                             }
-                            if (result.length.toString() < 4) {
-                                message.channel.send({
-                                    embed: {
-                                        color: 16711680,
-                                        description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
-                                    }
-                                });
-                                return;
-                            }
-                            var current = result[0].current;
-                            var location = result[0].location;
-                            var weatherReactionOutput = "";
-                            if (current.windspeed.slice(0, 2) >= 15) {
-                                weatherReactionOutput = ". Looks kinda windy out there!";
-                            } else if (current.skytext === "Light Rain" || current.skytext === "Rain") {
-                                weatherReactionOutput = ". Might want a raincoat!";
-                            } else if (current.temperature >= 85) {
-                                weatherReactionOutput = ". Looks pretty hot!";
-                            } else if (current.temperature <= 32) {
-                                weatherReactionOutput = ". Brr!";
-                            } else if (current.temperature <= 55 && current.temperature >= 33) {
-                                weatherReactionOutput = ". A little bit chilly!";
-                            } else if (current.temperature <= 84 && current.temperature >= 56) {
-                                weatherReactionOutput = ". Seems pretty nice out!";
-                            }
-                            message.channel.send({
-                                embed: {
-                                    color: 3066993,
-                                    description: `It's currently **${current.temperature}°F** and **${current.skytext}**${weatherReactionOutput}`,
-                                    thumbnail: {
-                                        "url": current.imageUrl
-                                    },
-                                    fields: [{
-                                            name: "Temperature",
-                                            value: `${current.temperature}°F (${Math.round((current.temperature -32) * 5 / 9)}°C)`,
-                                            "inline": true
-                                            },
-                                        {
-                                            name: "Feels Like",
-                                            value: `${current.feelslike}°F (${Math.round((current.feelslike -32) * 5 / 9)}°C)`,
-                                            "inline": true
-                                            },
-                                        {
-                                            name: "Wind Speed",
-                                            value: current.windspeed,
-                                            "inline": true
-                                            },
-                                        {
-                                            name: "Humidity",
-                                            value: `${current.humidity}%`,
-                                            "inline": true
-                                            }
-                                        ],
-                                    footer: {
-                                        "text": location.name
-                                    }
+                        }).then(function (message) {
+                            weather.find({
+                                search: searchTerm,
+                                degreeType: 'F'
+                            }, function (err, result) {
+                                if (!result || result.length.toString() < 4) {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
+                                        }
+                                    });
+                                    return;
                                 }
+                                if (result.length.toString() < 4) {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
+                                        }
+                                    });
+                                    return;
+                                }
+                                var current = result[0].current;
+                                var location = result[0].location;
+                                var weatherReactionOutput = "";
+                                if (current.windspeed.slice(0, 2) >= 15) {
+                                    weatherReactionOutput = ". Looks kinda windy out there!";
+                                } else if (current.skytext === "Light Rain" || current.skytext === "Rain") {
+                                    weatherReactionOutput = ". Might want a raincoat!";
+                                } else if (current.temperature >= 85) {
+                                    weatherReactionOutput = ". Looks pretty hot!";
+                                } else if (current.temperature <= 32) {
+                                    weatherReactionOutput = ". Brr!";
+                                } else if (current.temperature <= 55 && current.temperature >= 33) {
+                                    weatherReactionOutput = ". A little bit chilly!";
+                                } else if (current.temperature <= 84 && current.temperature >= 56) {
+                                    weatherReactionOutput = ". Seems pretty nice out!";
+                                }
+                                message.edit({
+                                    embed: {
+                                        color: 3066993,
+                                        description: `It's currently **${current.temperature}°F** and **${current.skytext}**${weatherReactionOutput}`,
+                                        thumbnail: {
+                                            "url": current.imageUrl
+                                        },
+                                        fields: [{
+                                                name: "Temperature",
+                                                value: `${current.temperature}°F (${Math.round((current.temperature -32) * 5 / 9)}°C)`,
+                                                "inline": true
+                                                },
+                                            {
+                                                name: "Feels Like",
+                                                value: `${current.feelslike}°F (${Math.round((current.feelslike -32) * 5 / 9)}°C)`,
+                                                "inline": true
+                                                },
+                                            {
+                                                name: "Wind Speed",
+                                                value: current.windspeed,
+                                                "inline": true
+                                                },
+                                            {
+                                                name: "Humidity",
+                                                value: `${current.humidity}%`,
+                                                "inline": true
+                                                }
+                                            ],
+                                        footer: {
+                                            "text": location.name
+                                        }
+                                    }
+                                });
                             });
                         });
                         break;
 
                     case '8ball':
                     case '8-ball':
-                        if (runCheck % 29 === 0) {
+                        if (runCheck % 23 === 0) {
                             break;
                         } else {
-                            runCheck *= 29;
+                            runCheck *= 23;
                         }
                         var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                         var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
@@ -475,10 +445,10 @@ client.on('message', async message => {
                         break;
 
                     case 'minecraft':
-                        if (runCheck % 31 === 0) {
+                        if (runCheck % 29 === 0) {
                             break;
                         } else {
-                            runCheck *= 31;
+                            runCheck *= 29;
                         }
                         var address = ["ip", "25565"];
                         for (var outMinecraftSearch = 0; outMinecraftSearch < splitMessage.length; outMinecraftSearch++) {
@@ -496,75 +466,82 @@ client.on('message', async message => {
                         }
                         var request = require('request');
                         var url = 'https://mc-api.net/v3/server/ping/' + address[0] + ':' + address[1];
-                        request(url, function (err, response, body) {
-                            if (err) {
-                                message.channel.send({
-                                    embed: {
-                                        color: 16711680,
-                                        description: "Sorry, but my Minecraft status capabilities seem to be hindered at the moment. Please try again later!"
-                                    }
-                                });
+                        message.channel.send({
+                            embed: {
+                                color: 16312092,
+                                description: loadingLines[choice]
                             }
-                            try {
-                                body = JSON.parse(body);
-                            } catch (error) {
-                                message.channel.send({
-                                    embed: {
-                                        color: 16711680,
-                                        description: "Sorry, but I couldn't find anything for that Minecraft server. Is it offline?"
-                                    }
-                                });
-                                return;
-                            }
-                            if (body.online) {
-                                message.channel.send({
-                                    embed: {
-                                        color: 3066993,
-                                        description: "Looks like that server is online to me!",
-                                        thumbnail: {
-                                            "url": "https://mc-api.net/v3/server/favicon/" + address[0] + ':' + address[1]
-                                        },
-                                        fields: [{
-                                                name: "Server IP",
-                                                value: address[0] + ":" + address[1],
-                                                "inline": true
+                        }).then(function (message) {
+                            request(url, function (err, response, body) {
+                                if (err) {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: "Sorry, but my Minecraft status capabilities seem to be hindered at the moment. Please try again later!"
+                                        }
+                                    });
+                                }
+                                try {
+                                    body = JSON.parse(body);
+                                } catch (error) {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: "Sorry, but I couldn't find anything for that Minecraft server. Is it offline?"
+                                        }
+                                    });
+                                    return;
+                                }
+                                if (body.online) {
+                                    message.edit({
+                                        embed: {
+                                            color: 3066993,
+                                            description: "Looks like that server is online to me!",
+                                            thumbnail: {
+                                                "url": "https://mc-api.net/v3/server/favicon/" + address[0] + ':' + address[1]
                                             },
-                                            {
-                                                name: "Players",
-                                                value: body.players.online + "/" + body.players.max,
-                                                "inline": true
-                                            },
-                                            {
-                                                name: "Latency",
-                                                value: body.took.toFixed() + "ms",
-                                                "inline": true
-                                            },
-                                            {
-                                                name: "Version",
-                                                value: body.version.name,
-                                                "inline": true
-                                            }
-                                        ]
-                                    }
+                                            fields: [{
+                                                    name: "Server IP",
+                                                    value: address[0] + ":" + address[1],
+                                                    "inline": true
+                                                },
+                                                {
+                                                    name: "Players",
+                                                    value: body.players.online + "/" + body.players.max,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    name: "Latency",
+                                                    value: body.took.toFixed() + "ms",
+                                                    "inline": true
+                                                },
+                                                {
+                                                    name: "Version",
+                                                    value: body.version.name,
+                                                    "inline": true
+                                                }
+                                            ]
+                                        }
 
-                                });
-                            } else {
-                                message.channel.send({
-                                    embed: {
-                                        color: 16711680,
-                                        description: "Sorry, but I couldn't find anything for that Minecraft server. Is it offline?"
-                                    }
-                                });
-                            }
+                                    });
+                                } else {
+                                    message.edit({
+                                        embed: {
+                                            color: 16711680,
+                                            description: "Sorry, but I couldn't find anything for that Minecraft server. Is it offline?"
+                                        }
+                                    });
+                                }
+                            });
                         });
                         break;
 
                     case 'music':
                     case 'play':
-                        if (runCheck % 37 === 0) {
+                        if (runCheck % 31 === 0) {
                             break;
                         } else {
-                            runCheck *= 37;
+                            runCheck *= 31;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -709,10 +686,10 @@ client.on('message', async message => {
                         break;
 
                     case 'skip':
-                        if (runCheck % 41 === 0) {
+                        if (runCheck % 37 === 0) {
                             break;
                         } else {
-                            runCheck *= 41;
+                            runCheck *= 37;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -747,10 +724,10 @@ client.on('message', async message => {
 
                     case 'stop':
                     case 'leave':
-                        if (runCheck % 43 === 0) {
+                        if (runCheck % 41 === 0) {
                             break;
                         } else {
-                            runCheck *= 43;
+                            runCheck *= 41;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -786,10 +763,10 @@ client.on('message', async message => {
 
                     case 'nowplaying':
                     case 'np':
-                        if (runCheck % 47 === 0) {
+                        if (runCheck % 43 === 0) {
                             break;
                         } else {
-                            runCheck *= 47;
+                            runCheck *= 43;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -818,10 +795,10 @@ client.on('message', async message => {
                         break;
 
                     case 'queue':
-                        if (runCheck % 53 === 0) {
+                        if (runCheck % 47 === 0) {
                             break;
                         } else {
-                            runCheck *= 53;
+                            runCheck *= 47;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -851,10 +828,10 @@ client.on('message', async message => {
                         break;
 
                     case 'pause':
-                        if (runCheck % 59 === 0) {
+                        if (runCheck % 53 === 0) {
                             break;
                         } else {
-                            runCheck *= 59;
+                            runCheck *= 53;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -892,10 +869,10 @@ client.on('message', async message => {
                         break;
 
                     case 'resume':
-                        if (runCheck % 61 === 0) {
+                        if (runCheck % 59 === 0) {
                             break;
                         } else {
-                            runCheck *= 61;
+                            runCheck *= 59;
                         }
                         if (!message.guild) {
                             message.channel.send({
@@ -961,16 +938,16 @@ client.on('message', async message => {
                     case 'divide':
                     case 'solve':
                     case 'translate':
-                        if (runCheck % 67 === 0) {
+                        if (runCheck % 61 === 0) {
                             break;
                         } else {
-                            runCheck *= 67;
+                            runCheck *= 61;
                         }
                         var wolframQuestion = splitMessagePreserved.join(" ").replace(/marcel|wolfram/gi, "");
                         message.channel.send({
                             embed: {
                                 color: 16312092,
-                                description: "Thinking..."
+                                description: loadingLines[choice]
                             }
                         }).then(function (message) {
                             Wolfram.query(wolframQuestion, function (err, result) {
@@ -1005,13 +982,21 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 71;
                         }
-                        var feed = await rss.parseURL('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss');
                         message.channel.send({
                             embed: {
-                                color: 3066993,
-                                title: "News",
-                                description: `- [${feed.items[0].title}](${feed.items[0].link})\n- [${feed.items[1].title}](${feed.items[1].link})\n- [${feed.items[2].title}](${feed.items[2].link})\n- [${feed.items[3].title}](${feed.items[3].link})\n- [${feed.items[4].title}](${feed.items[4].link})\n- [${feed.items[5].title}](${feed.items[5].link})`
+                                color: 16312092,
+                                description: loadingLines[choice]
                             }
+                        }).then(function (message) {
+                            rss.load('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss', function (err, rss) {
+                                message.edit({
+                                    embed: {
+                                        color: 3066993,
+                                        title: "News",
+                                        description: `- [${rss.items[0].title}](${rss.items[0].link})\n- [${rss.items[1].title}](${rss.items[1].link})\n- [${rss.items[2].title}](${rss.items[2].link})\n- [${rss.items[3].title}](${rss.items[3].link})\n- [${rss.items[4].title}](${rss.items[4].link})\n- [${rss.items[5].title}](${rss.items[5].link})`
+                                    }
+                                });
+                            });
                         });
                         break;
 
@@ -1032,7 +1017,7 @@ client.on('message', async message => {
         message.channel.send({
             embed: {
                 color: 16312092,
-                description: "Thinking..."
+                description: loadingLines[choice]
             }
         }).then(function (message) {
             cleverbot.create().then(() => {
@@ -1054,8 +1039,8 @@ client.on('message', async message => {
                     }).catch(err => {
                         message.edit({
                             embed: {
-                                color: 16711680,
-                                description: "Sorry, something went wrong! 〒﹏〒 [Click here to learn more](http://marcel.vulpix.pw/#cleverbot_error)"
+                                color: 3066993,
+                                description: txtgen.sentence()
                             }
                         });
                     });
@@ -1063,8 +1048,8 @@ client.on('message', async message => {
             }).catch(err => {
                 message.edit({
                     embed: {
-                        color: 16711680,
-                        description: "Sorry, something went wrong! 〒﹏〒  [Click here to learn more](http://marcel.vulpix.pw/#cleverbot_error)"
+                        color: 3066993,
+                        description: txtgen.sentence()
                     }
                 });
             });
