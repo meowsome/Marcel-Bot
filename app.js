@@ -49,7 +49,7 @@ client.on('ready', () => {
 client.on("guildCreate", guild => {
     client.channels.get('397862894005387287').send({
         embed: {
-            color: 3066993,
+            color: 16312092,
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
@@ -68,7 +68,7 @@ client.on("guildCreate", guild => {
 client.on("guildDelete", guild => {
     client.channels.get('397862894005387287').send({
         embed: {
-            color: 16711680,
+            color: 16312092,
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
@@ -105,11 +105,8 @@ client.on('message', async message => {
 //                    description: "**Warning**: I am currently being developed! You'll see some weird stuff happening, but you can still use me for now."
 //                }
 //            });
-
-            //Loading Lines
             var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
             var choice = Math.round(Math.random() * (loadingLines.length - 1));
-
             var missCount = 0;
             var runCheck = 1;
             if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
@@ -656,7 +653,8 @@ client.on('message', async message => {
                                 connection: null,
                                 songs: [],
                                 volume: 5,
-                                playing: true
+                                playing: true,
+                                skips: []
                             };
                             queue.set(message.guild.id, queueConstruct);
                             queueConstruct.songs.push(song);
@@ -711,7 +709,28 @@ client.on('message', async message => {
                             break;
                         }
                         if (serverQueue) {
-                            serverQueue.connection.dispatcher.end();
+                            if (serverQueue.skips.indexOf(client.users.get(message.author.id).id) === -1) {
+                                serverQueue.skips.push(client.users.get(message.author.id).id);
+                                var skipRequiredAmount = Math.round(serverQueue.voiceChannel.members.size / 2);
+                                if (serverQueue.skips.length === skipRequiredAmount) {
+                                    serverQueue.connection.dispatcher.end();
+                                } else {
+                                    message.channel.send({
+                                        embed: {
+                                            color: 16312092,
+                                            description: `There's currently **${serverQueue.skips.length}** out of **${skipRequiredAmount}** votes required to skip the current song`
+                                        }
+                                    });
+                                }
+                            } else {
+                                message.channel.send({
+                                    embed: {
+                                        color: 16711680,
+                                        description: "You've already voted to skip the current song!"
+                                    }
+                                });
+                                break;
+                            }
                         } else {
                             message.channel.send({
                                 embed: {
@@ -719,6 +738,7 @@ client.on('message', async message => {
                                     description: "There's nothing currently playing, silly!"
                                 }
                             });
+                            break;
                         }
                         break;
 
@@ -1109,6 +1129,7 @@ client.on('message', async message => {
                         serverQueue.voiceChannel.leave();
                         return;
                     }
+                    serverQueue.skips = [];
                     serverQueue.songs.shift();
                     play(guild, serverQueue.songs[0]);
                 }, 200);
