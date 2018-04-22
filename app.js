@@ -15,7 +15,6 @@ const cleverbot = new Cleverbot({
     nick: 'marcelsession'
 });
 const rss = require('feed-to-json');
-const txtgen = require('txtgen');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -105,8 +104,10 @@ client.on('message', async message => {
 //                    description: "**Warning**: I am currently being developed! You'll see some weird stuff happening, but you can still use me for now."
 //                }
 //            });
+
             var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
             var choice = Math.round(Math.random() * (loadingLines.length - 1));
+
             var missCount = 0;
             var runCheck = 1;
             if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
@@ -1034,6 +1035,8 @@ client.on('message', async message => {
 
     function cleverbotWork() {
         var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
+        var randomStatements = ['I like cheese', 'I can\'t remember if it\'s your time for medication or mine', 'I do whatever my Rice Crispies tell me to do', 'Would you like some popcorn?', 'Even my issues have issues', 'This is Bob. Bob likes you. Bob likes sharp things. I suggest you run from Bob.', 'Tomorrow has been cancelled due to lack of interest.', 'Come to the dark side, we have cookies', 'Ha ha! I don\'t get it.', 'To be, or not to be: that is the question', 'My nose is a communist', 'Wear short sleeves. Support your right to bare arms!', 'Cheese...Milk\'s leap towards immortality!', 'Change is good, but dollars are better', 'Occifer I swear to drunk I\'m not as god as you think I am!', 'The quick brown fox jumps over the lazy dog.', 'Hi how are you', 'Get out of my kitchen!!!!!!!!!!!', 'Lol', 'Mwahahaha!', 'Beware!', 'owo', 'owo?', 'uwu', 'Harry Styles', 'ey b0ss', 'Has anyone really been far even as decided to use even go want to do look more like?', 'I honestly have no idea.', 'It\'s common sense!', 'You\'ve got to be kidding me', 'Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo', 'I\'m pregnant', 'Have you ever had a dream?', 'I play Minecraft', 'Are you a bot?', 'How so.', 'How are you from?', 'How was your day?', 'Don\'t smoke coffee', 'Why sentence this you need?', 'Why would an otter need an ice cream sandwich?', 'Who\'s your favorite music artist?', 'Do you like pie?', 'Don\'t panic', 'I can tie a rat in half', 'The name\'s bond.', 'What do we want??', 'Are you my Uber?', 'Autocorrect makes me type things I didn\'t Nintendo', 'Insect jokes really bug me', 'Always give 100%, except if it\'s blood', 'Octopuses are all suckers', 'Am I under arrest??', 'STOP RESISTING', 'I am a legal U.S. citizen', 'Turn left, right?', 'Yes', 'No', 'Maybe', 'Idk', 'Why do you ask?', 'Jumbo shrimp', 'aaaaaaa', 'I\'m stupid :(', 'Wassup', 'I am a Leafeon', 'I\'ve got ham but I\'m not a hamster', 'That\'s one small step for man, one giant leap for mankind.', 'Beep boop', 'Is water wet?', 'Just Google it', 'Just Bing it', 'Run.', 'Make love, not bugs.', 'Maybe you can live on the moon in next century', 'Only listen to fortune cookie, disregard all other fortune telling units', 'The early bird gets the worm, but the second mouse gets the cheese.', 'There\'s no such thing as an ordinary cat', 'No snowflake in an avalanche ever feels responsible', 'What\'s the speed of dark?', 'When in anger, sing the alphabet', 'Life is not a struggle. It\'s a wiggle', 'Discord!', 'Never gonna give you up, never gonna let you down, never gonna run around and desert you', 'You just ate cat', 'Error 404', 'Foot: A device for finding furnature in the dark.', 'Your pet is planning to eat you', 'I cannot help you', 'Hru?', 'Are you sleeping?', 'I\'m tired', 'Do you like me?', 'You are heading in the right direction', 'Never trust a dog to watch your food', 'Forget the cake, go for the icing', 'Listen to your brain, it has lots of information!', 'Dumbledore', 'Now is the time, do not haste any longer', 'I wanna be like a caterpillar. Eat a lot. Sleep for a while. Wake up beautiful', 'You\'re pretty cool', 'That\'s offensive', 'Would you like something to drink?'];
+        var choice = Math.round(Math.random() * (loadingLines.length - 1));
         message.channel.send({
             embed: {
                 color: 16312092,
@@ -1049,29 +1052,20 @@ client.on('message', async message => {
                         }
                     });
                 }).catch(err => {
-                    cleverbot.ask(cleverbotQuestion).then(response => {
-                        message.edit({
-                            embed: {
-                                color: 3066993,
-                                description: response
-                            }
-                        });
-                    }).catch(err => {
-                        message.edit({
-                            embed: {
-                                color: 3066993,
-                                description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
-                            }
-                        });
+                    message.edit({
+                        embed: {
+                            color: 3066993,
+                            description: randomStatements[choice]
+                        }
                     });
                 });
-            }).catch(err => {
-                message.edit({
-                    embed: {
-                        color: 3066993,
-                        description: txtgen.sentence() + ' [(?)](http://marcel.vulpix.pw/#cleverbot_error)'
-                    }
-                });
+            });
+        }).catch(err => {
+            message.edit({
+                embed: {
+                    color: 3066993,
+                    description: randomStatements[choice]
+                }
             });
         });
     }
