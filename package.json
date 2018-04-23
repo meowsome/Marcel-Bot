@@ -14,8 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "better-cleverbot-io": "^1.0.2",
-    "bufferutil": "^3.0.3",
     "discord.js": "^11.3.2",
+    "erlpack": "github:discordapp/erlpack",
     "feed-to-json": "^1.0.3",
     "node-wolfram": "0.0.1",
     "opusscript": "0.0.6",
