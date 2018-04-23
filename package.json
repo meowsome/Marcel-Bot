@@ -8,7 +8,7 @@
     "node": "8.9.3"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node app.js"
   },
   "author": "meowsome & BucketMuncher",
   "license": "MIT",
