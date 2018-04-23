@@ -2,19 +2,19 @@
   "name": "marcel",
   "version": "1.0.0",
   "description": "A cute and helpful Discord bot!",
+  "repository": "http://marcel.vulpix.pw",
   "main": "app.js",
   "engines": {
     "node": "8.9.3"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "meowsome with LOTS OF HELP FROM BUCKETMUNCHER",
+  "author": "meowsome & BucketMuncher",
   "license": "MIT",
   "dependencies": {
     "better-cleverbot-io": "^1.0.2",
-    "discord.js": "^11.2.1",
+    "discord.js": "^11.3.2",
     "feed-to-json": "^1.0.3",
     "node-opus": "^0.2.7",
     "node-wolfram": "0.0.1",
