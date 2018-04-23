@@ -15,11 +15,11 @@
   "dependencies": {
     "better-cleverbot-io": "^1.0.2",
     "discord.js": "^11.3.2",
-    "erlpack": "github:discordapp/erlpack",
     "feed-to-json": "^1.0.3",
     "node-wolfram": "0.0.1",
     "opusscript": "0.0.6",
     "simple-youtube-api": "^5.0.1",
+    "uws": "^9.148.0",
     "weather-js": "^2.0.0",
     "ytdl-core": "^0.20.2"
   }
