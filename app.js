@@ -358,9 +358,9 @@ client.on('message', async message => {
                                 var current = result[0].current;
                                 var location = result[0].location;
                                 var weatherReactionOutput = "";
-                                if (current.windspeed.slice(0, 2) >= 15) {
+                                if (current.windspeed.slice(0, 2) >= 20) {
                                     weatherReactionOutput = ". Looks kinda windy out there!";
-                                } else if (current.skytext === "Light Rain" || current.skytext === "Rain") {
+                                } else if (current.skytext === "Light Rain" || current.skytext === "Rain" || current.skytext === "T-Storms") {
                                     weatherReactionOutput = ". Might want a raincoat!";
                                 } else if (current.temperature >= 85) {
                                     weatherReactionOutput = ". Looks pretty hot!";
