@@ -759,12 +759,20 @@ client.on('message', async message => {
                             });
                             break;
                         }
-                        voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
                                     color: 16711680,
                                     description: "You need to be in a voice channel to stop music!"
+                                }
+                            });
+                            break;
+                        }
+                        if (!message.member.hasPermission('MUTE_MEMBERS')) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "You don't have adequate permissions to stop me from playing music! If you need someone to kick me because somebody queued up a thousand bass boost earrape meme compilations, please ask somebody with the ability to mute people in the voice channels to stop me!"
                                 }
                             });
                             break;
