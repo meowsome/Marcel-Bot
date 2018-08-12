@@ -26,7 +26,7 @@ client.on('ready', () => {
 
     client.user.setPresence({
         game: {
-            name: `with ${client.users.size} users`,
+            name: 'Say my name and "help" for help',
             type: 0
         }
     });
