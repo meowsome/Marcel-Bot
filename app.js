@@ -98,13 +98,7 @@ client.on('message', async message => {
     }
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-//            message.channel.send({
-//                embed: {
-//                    color: 16711680,
-//                    description: "**Warning**: I am currently being developed! You'll see some weird stuff happening, but you can still use me for now."
-//                }
-//            });
-
+            console.log('Command: ', step);
             var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
             var loadingLinesRandom = Math.round(Math.random() * (loadingLines.length - 1));
 
