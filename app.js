@@ -3,7 +3,7 @@ const Util = require('discord.js');
 const client = new Discord.Client();
 const weather = require('weather-js');
 const wolfram = require('node-wolfram');
-const Wolfram = new wolfram(process.env.WOLFRAM);
+const Wolfram = new wolfram();
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
@@ -14,36 +14,30 @@ const cleverbot = new Cleverbot({
     key: process.env.CLEVERBOTKEY,
     nick: 'marcelsession'
 });
-const rss = require('feed-to-json');
+const {
+    fetchSubreddit
+} = require('fetch-subreddit');
+var {
+    extract
+} = require('article-parser');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
 
     client.user.setPresence({
         game: {
-            name: 'Say my name and "help" for help',
+            name: `with ${client.users.size} users`,
             type: 0
         }
     });
-
+    
     client.channels.get('397862894005387287').send({
         embed: {
             color: 3066993,
             description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
         }
     });
-
-    client.channels.get('397889669989400596').edit({
-        name: `${client.users.size}-`,
-        bitrate: 8000
-    });
-    client.channels.get('397889346990112768').edit({
-        name: `${client.guilds.size}-`,
-        bitrate: 8000
-    });
 });
-
-
 
 client.on("guildCreate", guild => {
     client.channels.get('397862894005387287').send({
@@ -52,6 +46,7 @@ client.on("guildCreate", guild => {
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
+
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
         bitrate: 8000
@@ -61,8 +56,6 @@ client.on("guildCreate", guild => {
         bitrate: 8000
     });
 });
-
-
 
 client.on("guildDelete", guild => {
     client.channels.get('397862894005387287').send({
@@ -71,6 +64,7 @@ client.on("guildDelete", guild => {
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
+
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
         bitrate: 8000
@@ -81,30 +75,29 @@ client.on("guildDelete", guild => {
     });
 });
 
-
-
 client.on('message', async message => {
     if (message.author.bot) return;
+
     var step = message.content.toLowerCase();
     var step = step.replace('marcel', ' marcel ');
     var splitMessage = step.split(" ");
     var splitMessagePreserved = message.content.toString().split(" ");
-    //Song stuff uwu
+
     if (message.guild) {
         var serverQueue = queue.get(message.guild.id);
         var voiceChannel = message.member.voiceChannel;
-        var musicLink = "$";
-        var searchQuery = "$";
     }
+
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
-            console.log('Command: ', step);
+            console.log('Command: ', step); //DEBUGGING,,, LOGS EVERY COMMAND IN CONSOLE
             var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
             var loadingLinesRandom = Math.round(Math.random() * (loadingLines.length - 1));
-
             var missCount = 0;
             var runCheck = 1;
+
             if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
+
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
                     case 'help':
@@ -115,6 +108,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 2;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -130,6 +124,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 2;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -144,6 +139,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 3;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -158,6 +154,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 5;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -175,12 +172,15 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 7;
                         }
+
                         var id = message.author.id;
+
                         for (var outAvatarSearch = 0; outAvatarSearch < splitMessage.length; outAvatarSearch++) {
                             if ((splitMessage[outAvatarSearch].indexOf("@") != -1) && (splitMessage[outAvatarSearch].indexOf("<") != -1) && (splitMessage[outAvatarSearch].indexOf(">") != -1)) {
                                 id = splitMessage[outAvatarSearch].slice(splitMessage[outAvatarSearch].indexOf("@") + 1, splitMessage[outAvatarSearch].indexOf(">"));
                             }
                         }
+
                         try {
                             var avatarURL = client.users.get(id).avatarURL;
                         } catch (error) {
@@ -192,6 +192,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -210,6 +211,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 11;
                         }
+
                         try {
                             var id = message.author.id;
                             for (var outProfileSearch = 0; outProfileSearch < splitMessage.length; outProfileSearch++) {
@@ -232,6 +234,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -287,6 +290,7 @@ client.on('message', async message => {
                             var sec = Math.floor((ms % 60000) / 1000);
                             return day + " days, " + hr + " hours, " + min + " minutes, and " + sec + " seconds";
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -301,6 +305,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 17;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -315,12 +320,14 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 19;
                         }
+
                         var weatherMessage = splitMessage.join(" ");
                         if (weatherMessage.indexOf("\"") === weatherMessage.lastIndexOf("\"")) {
                             var searchTerm = weatherMessage;
                         } else {
                             var searchTerm = weatherMessage.slice(weatherMessage.indexOf("\"") + 1, weatherMessage.lastIndexOf("\""));
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 16312092,
@@ -340,18 +347,11 @@ client.on('message', async message => {
                                     });
                                     return;
                                 }
-                                if (result.length.toString() < 4) {
-                                    message.edit({
-                                        embed: {
-                                            color: 16711680,
-                                            description: 'Sorry, I couldn\'t find the weather for that place! Please enter a valid location or zip code.'
-                                        }
-                                    });
-                                    return;
-                                }
+
                                 var current = result[0].current;
                                 var location = result[0].location;
                                 var weatherReactionOutput = "";
+
                                 if (current.windspeed.slice(0, 2) >= 20) {
                                     weatherReactionOutput = ". Looks kinda windy out there!";
                                 } else if (current.skytext === "Light Rain" || current.skytext === "Rain" || current.skytext === "T-Storms") {
@@ -365,6 +365,7 @@ client.on('message', async message => {
                                 } else if (current.temperature <= 84 && current.temperature >= 56) {
                                     weatherReactionOutput = ". Seems pretty nice out!";
                                 }
+
                                 message.edit({
                                     embed: {
                                         color: 3066993,
@@ -409,11 +410,13 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 23;
                         }
+
                         var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                         var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
                         var eightBallResponsesRandom = Math.round(Math.random() * (eightBallResponses.length - 1));
                         var request = require('request');
                         var url = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=%27+' + simpleResponses[eightBallResponsesRandom];
+
                         request(url, function (err, response, body) {
                             if (err) {
                                 message.channel.send({
@@ -423,7 +426,9 @@ client.on('message', async message => {
                                     }
                                 });
                             }
+
                             body = JSON.parse(body);
+
                             message.channel.send({
                                 embed: {
                                     color: 3066993,
@@ -442,9 +447,12 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 29;
                         }
+
                         var address = ["ip", "25565"];
+
                         for (var outMinecraftSearch = 0; outMinecraftSearch < splitMessage.length; outMinecraftSearch++) {
                             var currentString = splitMessage[outMinecraftSearch];
+
                             for (var inMinecraftSearch = 0; inMinecraftSearch < currentString.length - 1; inMinecraftSearch++) {
                                 if (currentString.charAt(inMinecraftSearch) === '.') {
                                     if (currentString.indexOf(":") !== -1) {
@@ -456,8 +464,10 @@ client.on('message', async message => {
                                 }
                             }
                         }
+
                         var request = require('request');
                         var url = 'https://mc-api.net/v3/server/ping/' + address[0] + ':' + address[1];
+
                         message.channel.send({
                             embed: {
                                 color: 16312092,
@@ -473,6 +483,7 @@ client.on('message', async message => {
                                         }
                                     });
                                 }
+
                                 try {
                                     body = JSON.parse(body);
                                 } catch (error) {
@@ -484,6 +495,7 @@ client.on('message', async message => {
                                     });
                                     return;
                                 }
+
                                 if (body.online) {
                                     message.edit({
                                         embed: {
@@ -535,6 +547,11 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 31;
                         }
+
+                        serverQueue = queue.get(message.guild.id);
+                        var musicLink = "$";
+                        var searchQuery = "$";
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -544,21 +561,6 @@ client.on('message', async message => {
                             });
                             break;
                         }
-                        var musicMessage = splitMessagePreserved.join(" ");
-                        if (musicMessage.search("youtube.com/") != musicMessage.search("youtu.be/")) {
-                            for (var outMusicSearch = 0; outMusicSearch < splitMessagePreserved.length; outMusicSearch++) {
-                                if (splitMessagePreserved[outMusicSearch].search("youtu.be/") != splitMessagePreserved[outMusicSearch].search("youtube.com/")) {
-                                    musicLink = splitMessagePreserved[outMusicSearch];
-                                    outMusicSearch = splitMessage.length;
-                                }
-                            }
-                        } else if (musicMessage.indexOf("\"") != musicMessage.lastIndexOf("\"")) {
-                            searchQuery = musicMessage.slice(musicMessage.indexOf("\"") + 1, musicMessage.lastIndexOf("\""));
-                        } else {
-                            searchQuery = musicMessage.replace(/marcel|play|music/gi, " ");
-                        }
-                        serverQueue = queue.get(message.guild.id);
-                        voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
@@ -568,6 +570,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         var permissions = voiceChannel.permissionsFor(message.client.user);
                         if (!permissions.has('CONNECT')) {
                             message.channel.send({
@@ -586,6 +589,21 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
+                        var musicMessage = splitMessagePreserved.join(" ");
+                        if (musicMessage.search("youtube.com/") != musicMessage.search("youtu.be/")) {
+                            for (var outMusicSearch = 0; outMusicSearch < splitMessagePreserved.length; outMusicSearch++) {
+                                if (splitMessagePreserved[outMusicSearch].search("youtu.be/") != splitMessagePreserved[outMusicSearch].search("youtube.com/")) {
+                                    musicLink = splitMessagePreserved[outMusicSearch];
+                                    outMusicSearch = splitMessage.length;
+                                }
+                            }
+                        } else if (musicMessage.indexOf("\"") != musicMessage.lastIndexOf("\"")) {
+                            searchQuery = musicMessage.slice(musicMessage.indexOf("\"") + 1, musicMessage.lastIndexOf("\""));
+                        } else {
+                            searchQuery = musicMessage.replace(/marcel|play|music/gi, " ");
+                        }
+
                         if (musicLink != "$") {
                             try {
                                 var video = await youtube.getVideo(musicLink);
@@ -598,7 +616,8 @@ client.on('message', async message => {
                                 });
                                 break;
                             }
-                        } else if (searchQuery != "$" && splitMessage.length > 4) {
+                            console.log(splitMessage);
+                        } else if (searchQuery != "$" && splitMessage.length > 1) {
                             try {
                                 var videos = await youtube.searchVideos(searchQuery, 1);
                                 var video = await youtube.getVideoByID(videos[0].id);
@@ -622,11 +641,12 @@ client.on('message', async message => {
                         }
                         musicLink = "$";
                         searchQuery = "$";
+
                         if (video.duration.hours > 0) {
                             var song = {
                                 id: video.id,
                                 title: video.title,
-                                description: `${video.description.substring(0,100)}...`,
+                                description: `${video.description.substring(0,150)}...`,
                                 url: `https://www.youtube.com/watch?v=${video.id}`,
                                 thumbnail: video.thumbnails.default.url,
                                 duration: `${video.duration.hours}:${video.duration.minutes}:${video.duration.seconds}`
@@ -635,12 +655,13 @@ client.on('message', async message => {
                             var song = {
                                 id: video.id,
                                 title: video.title,
-                                description: `${video.description.substring(0,100)}...`,
+                                description: `${video.description.substring(0,150)}...`,
                                 url: `https://www.youtube.com/watch?v=${video.id}`,
                                 thumbnail: video.thumbnails.default.url,
                                 duration: `${video.duration.minutes}:${video.duration.seconds}`
                             };
                         }
+
                         if (!serverQueue) {
                             const queueConstruct = {
                                 textChannel: message.channel,
@@ -684,6 +705,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 37;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -693,7 +715,6 @@ client.on('message', async message => {
                             });
                             break;
                         }
-                        voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
@@ -703,6 +724,26 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
+                        var permissions = voiceChannel.permissionsFor(message.client.user);
+                        if (!permissions.has('CONNECT')) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "I don't have permission to **connect** to the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
+                                }
+                            });
+                            break;
+                        } else if (!permissions.has('SPEAK')) {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "I don't have permission to **speak** in the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
+                                }
+                            });
+                            break;
+                        }
+
                         if (serverQueue) {
                             if (serverQueue.skips.indexOf(client.users.get(message.author.id).id) === -1) {
                                 serverQueue.skips.push(client.users.get(message.author.id).id);
@@ -744,6 +785,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 41;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -762,6 +804,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (!message.member.hasPermission('MUTE_MEMBERS')) {
                             message.channel.send({
                                 embed: {
@@ -771,6 +814,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (serverQueue) {
                             serverQueue.songs = [];
                             serverQueue.connection.dispatcher.end();
@@ -786,11 +830,13 @@ client.on('message', async message => {
 
                     case 'nowplaying':
                     case 'np':
+
                         if (runCheck % 43 === 0) {
                             break;
                         } else {
                             runCheck *= 43;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -800,6 +846,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (serverQueue) {
                             message.channel.send({
                                 embed: {
@@ -823,6 +870,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 47;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -832,12 +880,13 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (serverQueue) {
                             message.channel.send({
                                 embed: {
                                     color: 3066993,
                                     title: "Song Queue",
-                                    description: `${serverQueue.songs.map(song => `- ${song.title}`).join("\n")}`
+                                    description: `${serverQueue.songs.map(song => `• ${song.title}`).join("\n")}`
                                 }
                             });
                         } else {
@@ -856,6 +905,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 53;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -865,6 +915,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (serverQueue && serverQueue.playing) {
                             serverQueue.playing = false;
                             serverQueue.connection.dispatcher.pause();
@@ -897,6 +948,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 59;
                         }
+
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -906,6 +958,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
                         if (serverQueue && !serverQueue.playing) {
                             serverQueue.playing = true;
                             serverQueue.connection.dispatcher.resume();
@@ -966,7 +1019,9 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 61;
                         }
+
                         var wolframQuestion = splitMessagePreserved.join(" ").replace(/marcel|wolfram/gi, "");
+
                         message.channel.send({
                             embed: {
                                 color: 16312092,
@@ -1005,22 +1060,64 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 71;
                         }
+
                         message.channel.send({
                             embed: {
                                 color: 16312092,
                                 description: loadingLines[loadingLinesRandom]
                             }
                         }).then(function (message) {
-                            rss.load('http://www.reddit.com/r/worldnews+uncensorednews+news/.rss', function (err, rss) {
+                            fetchSubreddit('news').then((redditPosts) => {
+                                var title = new Array();
+                                var summary = new Array();
+                                var source = new Array();
+                                var url = new Array();
+                                var thumbnail;
+                                var counter = 0;
+
+                                for (var i = 0; i < 5; i++) {
+                                    extract(redditPosts[0].urls[i]).then((websiteData) => {
+                                        title.push(websiteData.title);
+                                        summary.push(websiteData.description.replace(/\n/gi, " "));
+                                        source.push(websiteData.source);
+                                        url.push(websiteData.url);
+                                        if (counter === 0) thumbnail = websiteData.image;
+                                        counter++;
+
+                                        if (counter === 5) {
+                                            message.edit({
+                                                embed: {
+                                                    color: 3066993,
+                                                    title: 'News',
+                                                    description: `**${title[0]}**\n${summary[0]}\n*― [${source[0]}](${url[0]})*\n\n**${title[1]}**\n${summary[1]}\n*― [${source[1]}](${url[1]})*\n\n**${title[2]}**\n${summary[2]}\n*― [${source[2]}](${url[2]})*\n\n**${title[3]}**\n${summary[3]}\n*― [${source[3]}](${url[3]})*\n\n**${title[4]}**\n${summary[4]}\n*― [${source[4]}](${url[4]})*`,
+                                                    thumbnail: {
+                                                        url: thumbnail
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                            }).catch((err) => {
+                                console.log(err);
                                 message.edit({
                                     embed: {
-                                        color: 3066993,
-                                        title: "News",
-                                        description: `- [${rss.items[0].title}](${rss.items[0].link})\n- [${rss.items[1].title}](${rss.items[1].link})\n- [${rss.items[2].title}](${rss.items[2].link})\n- [${rss.items[3].title}](${rss.items[3].link})\n- [${rss.items[4].title}](${rss.items[4].link})\n- [${rss.items[5].title}](${rss.items[5].link})`
+                                        color: 16711680,
+                                        description: "I tried to retrieve the latest news stories for you, but something went wrong along the way. Sorry!"
                                     }
                                 });
+                                return;
+                            })
+                        }).catch((err) => {
+                            console.log(err);
+                            message.edit({
+                                embed: {
+                                    color: 16711680,
+                                    description: "I tried to retrieve the latest news stories for you, but something went wrong along the way. Sorry!"
+                                }
                             });
-                        });
+                            return;
+                        })
                         break;
 
                     default:
@@ -1039,6 +1136,7 @@ client.on('message', async message => {
         var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
         var randomStatements = ['I like cheese', 'I can\'t remember if it\'s your time for medication or mine', 'I do whatever my Rice Crispies tell me to do', 'Would you like some popcorn?', 'Even my issues have issues', 'This is Bob. Bob likes you. Bob likes sharp things. I suggest you run from Bob.', 'Tomorrow has been cancelled due to lack of interest.', 'Come to the dark side, we have cookies', 'Ha ha! I don\'t get it.', 'To be, or not to be: that is the question', 'My nose is a communist', 'Wear short sleeves. Support your right to bare arms!', 'Cheese...Milk\'s leap towards immortality!', 'Change is good, but dollars are better', 'Occifer I swear to drunk I\'m not as god as you think I am!', 'The quick brown fox jumps over the lazy dog.', 'Hi how are you', 'Get out of my kitchen!!!!!!!!!!!', 'Lol', 'Mwahahaha!', 'Beware!', 'owo', 'owo?', 'uwu', 'Harry Styles', 'ey b0ss', 'Has anyone really been far even as decided to use even go want to do look more like?', 'I honestly have no idea.', 'It\'s common sense!', 'You\'ve got to be kidding me', 'Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo', 'I\'m pregnant', 'Have you ever had a dream?', 'I play Minecraft', 'Are you a bot?', 'How so.', 'How are you from?', 'How was your day?', 'Don\'t smoke coffee', 'Why sentence this you need?', 'Why would an otter need an ice cream sandwich?', 'Who\'s your favorite music artist?', 'Do you like pie?', 'Don\'t panic', 'I can tie a rat in half', 'The name\'s bond.', 'What do we want??', 'Are you my Uber?', 'Autocorrect makes me type things I didn\'t Nintendo', 'Insect jokes really bug me', 'Always give 100%, except if it\'s blood', 'Octopuses are all suckers', 'Am I under arrest??', 'STOP RESISTING', 'I am a legal U.S. citizen', 'Turn left, right?', 'Yes', 'No', 'Maybe', 'Idk', 'Why do you ask?', 'Jumbo shrimp', 'aaaaaaa', 'I\'m stupid :(', 'Wassup', 'I am a Leafeon', 'I\'ve got ham but I\'m not a hamster', 'That\'s one small step for man, one giant leap for mankind.', 'Beep boop', 'Is water wet?', 'Just Google it', 'Just Bing it', 'Run.', 'Make love, not bugs.', 'Maybe you can live on the moon in next century', 'Only listen to fortune cookie, disregard all other fortune telling units', 'The early bird gets the worm, but the second mouse gets the cheese.', 'There\'s no such thing as an ordinary cat', 'No snowflake in an avalanche ever feels responsible', 'What\'s the speed of dark?', 'When in anger, sing the alphabet', 'Life is not a struggle. It\'s a wiggle', 'Discord!', 'Never gonna give you up, never gonna let you down, never gonna run around and desert you', 'You just ate cat', 'Error 404', 'Foot: A device for finding furnature in the dark.', 'Your pet is planning to eat you', 'I cannot help you', 'Hru?', 'Are you sleeping?', 'I\'m tired', 'Do you like me?', 'You are heading in the right direction', 'Never trust a dog to watch your food', 'Forget the cake, go for the icing', 'Listen to your brain, it has lots of information!', 'Dumbledore', 'Now is the time, do not haste any longer', 'I wanna be like a caterpillar. Eat a lot. Sleep for a while. Wake up beautiful', 'You\'re pretty cool', 'That\'s offensive', 'Would you like something to drink?', 'The best kind of frenzy is a puppy frenzy!', 'Examine your texts closely!', 'Time to synthesize this dough into some cookies.', 'This doesn\'t look like a very well-constructed argument.', 'Some very important stylish effects going on here.', 'A fairly sophisticated move', 'Noble knight, prepare to slay the dragon!', 'hhhhhhhhhh', 'Ewwww', 'Nooooo', 'I am Marcel!!!', 'What is my IP?', 'Canadians', 'What year is it?', 'What time is it?', 'What is love?', 'What are these strawberries doing on my nipples I need them for the fruit salad', 'What would a chair look like if your knees bent the other way?', 'What would you do?', 'Follow me on Twitter!', 'Foxes', 'Booty', 'Pirates', 'I wanna go home', 'I like to tape my thumbs to my hands to see what it would be like to be a dinosaur', 'Sometimes when I\'m alone I use comic sans', 'I am poem', 'Why can\'t I own a Canadian?', 'Yes master?', 'I Did the Macarena with a Homeless Guy Because Big Bird Said to and He’s my Leader', 'Firefox has crashed and needs cuddles', 'My cat and I have decided to stay in tonight', 'My cat ate my gymsuit', 'My cat wants to get an abortion', 'My cat was right about you', 'Put that mayonnaise on your child', 'Sometimes I like to lay on the floor and pretend I\'m a crumb', 'There is a deer in my car', 'Biscuits are never boring', 'That awkward moment when you\'re chilling in the park and Bruno Mars walks by dragging a piano', 'What if one day you wake up and you were a chicken nugget', 'Can I vacuum my dog?', 'Can I vacuum glass?', 'I\'m vaping alcohol', 'What if Google was deleted and we couldn\'t Google what happened to Google', 'Help I accidentally set my dog on fire', 'I can see you', 'What do you call a zombie prostitute?', 'What do you call an alligator in a vest?', 'Was Flo Rida born in Florida?', 'Bacon is a little hug from God', 'Facebook is like a refrigerator', 'I love when I buy a bag of air and the company is nice enough to put some chips in it', 'My dog is racist', 'My cat is prettier than me', 'There\'s a bomb in the lasagna!', 'Honey I think the cat is done charging', 'Who threw that ham at me?', 'I like to hang glide on a dorito', 'Robots are everywhere and they eat old people\'s medicine for fuel', 'Johnny Depp is my mailman', 'That awkward moment when you get in the van and there\'s no candy'];
         var randomStatementsRandom = Math.round(Math.random() * (randomStatements.length - 1));
+
         message.channel.send({
             embed: {
                 color: 16312092,
@@ -1074,9 +1172,9 @@ client.on('message', async message => {
 
 
 
-
     function play(guild, song) {
         const serverQueue = queue.get(guild.id);
+
         if (!song) {
             if (serverQueue) {
                 serverQueue.voiceChannel.leave();
@@ -1084,15 +1182,16 @@ client.on('message', async message => {
             queue.delete(guild.id);
             return;
         }
+
         const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
             .on('start', () => {
                 message.channel.send({
                     embed: {
                         color: 3066993,
                         title: `:arrow_forward: Now playing **${song.title}**`,
-                        description: song.description,
+                        description: `${song.description} ([Read more](${song.url}))`,
                         "footer": {
-                            "text": `Duration: ${song.duration}`
+                            "text": song.duration
                         },
                         "thumbnail": {
                             "url": song.thumbnail
@@ -1105,9 +1204,8 @@ client.on('message', async message => {
                         embed: {
                             color: 3066993,
                             title: `:track_next: The song **${song.title}** has ended`,
-                            description: song.description,
                             "footer": {
-                                "text": `Duration: ${song.duration}`
+                                "text": song.duration
                             },
                             "thumbnail": {
                                 "url": song.thumbnail
@@ -1125,6 +1223,7 @@ client.on('message', async message => {
                         serverQueue.voiceChannel.leave();
                         return;
                     }
+
                     serverQueue.skips = [];
                     serverQueue.songs.shift();
                     play(guild, serverQueue.songs[0]);
@@ -1138,8 +1237,10 @@ client.on('message', async message => {
                 });
                 console.log(error);
             });
+
         dispatcher.setVolumeLogarithmic(5 / 5);
     }
 });
+
 
 client.login(process.env.TOKEN);

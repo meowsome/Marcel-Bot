@@ -13,11 +13,12 @@
   "author": "meowsome & BucketMuncher",
   "license": "MIT",
   "dependencies": {
-    "article-extractor": "^1.0.2",
+    "article-parser": "^2.3.7",
     "better-cleverbot-io": "^1.0.2",
     "discord.js": "^11.3.2",
     "feed-to-json": "^1.0.3",
     "fetch-subreddit": "^3.0.0",
+    "in-a-nutshell": "^0.1.2",
     "node-wolfram": "0.0.1",
     "opusscript": "0.0.6",
     "simple-youtube-api": "^5.0.1",
