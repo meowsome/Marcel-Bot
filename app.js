@@ -2,8 +2,8 @@ const Discord = require('discord.js');
 const Util = require('discord.js');
 const client = new Discord.Client();
 const weather = require('weather-js');
-const wolfram = require('node-wolfram');
-const Wolfram = new wolfram();
+const wolframClient = require('node-wolfram');
+const wolfram = new wolframClient(process.env.WOLFRAM);
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
@@ -30,14 +30,14 @@ client.on('ready', () => {
             type: 0
         }
     });
-    
+
     client.channels.get('397862894005387287').send({
         embed: {
             color: 3066993,
             description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
         }
     });
-    
+
     client.channels.get('397889669989400596').edit({
         name: `${client.users.size}-`,
         bitrate: 8000
@@ -143,6 +143,8 @@ client.on('message', async message => {
                         break;
 
                     case 'changelog':
+                    case 'update':
+                    case 'updates':
                         if (runCheck % 3 === 0) {
                             break;
                         } else {
@@ -232,7 +234,7 @@ client.on('message', async message => {
                             if (client.users.get(id).presence.game) {
                                 var currentlyPlaying = client.users.get(id).presence.game.name;
                             } else {
-                                var currentlyPlaying = "Nothing";
+                                var currentlyPlaying = "N/A";
                             }
                         } catch (error) {
                             message.channel.send({
@@ -580,6 +582,18 @@ client.on('message', async message => {
                             break;
                         }
 
+                        if (serverQueue && !serverQueue.playing && splitMessagePreserved.length <= 2) {
+                            serverQueue.playing = true;
+                            serverQueue.connection.dispatcher.resume();
+                            message.channel.send({
+                                embed: {
+                                    color: 3066993,
+                                    description: ":arrow_forward: The song has been resumed"
+                                }
+                            });
+                            break;
+                        }
+
                         var permissions = voiceChannel.permissionsFor(message.client.user);
                         if (!permissions.has('CONNECT')) {
                             message.channel.send({
@@ -625,7 +639,6 @@ client.on('message', async message => {
                                 });
                                 break;
                             }
-                            console.log(splitMessage);
                         } else if (searchQuery != "$" && splitMessage.length > 1) {
                             try {
                                 var videos = await youtube.searchVideos(searchQuery, 1);
@@ -789,6 +802,7 @@ client.on('message', async message => {
 
                     case 'stop':
                     case 'leave':
+                    case 'clear':
                         if (runCheck % 41 === 0) {
                             break;
                         } else {
@@ -1037,7 +1051,7 @@ client.on('message', async message => {
                                 description: loadingLines[loadingLinesRandom]
                             }
                         }).then(function (message) {
-                            Wolfram.query(wolframQuestion, function (err, result) {
+                            wolfram.query(wolframQuestion, function (err, result) {
                                 if (!result) {
                                     message.edit({
                                         embed: {
@@ -1064,10 +1078,10 @@ client.on('message', async message => {
                         break;
 
                     case 'news':
-                        if (runCheck % 71 === 0) {
+                        if (runCheck % 67 === 0) {
                             break;
                         } else {
-                            runCheck *= 71;
+                            runCheck *= 67;
                         }
 
                         message.channel.send({
