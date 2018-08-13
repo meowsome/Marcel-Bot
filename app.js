@@ -105,7 +105,7 @@ client.on('message', async message => {
             var missCount = 0;
             var runCheck = 1;
 
-            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 67;
+            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1) runCheck *= 61;
 
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
