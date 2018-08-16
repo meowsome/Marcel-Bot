@@ -92,14 +92,10 @@ client.on('message', async message => {
     var splitMessage = step.split(" ");
     var splitMessagePreserved = message.content.toString().split(" ");
 
-    if (message.guild) {
-        var serverQueue = queue.get(message.guild.id);
-        var voiceChannel = message.member.voiceChannel;
-    }
-
     for (var mainSearch = 0; mainSearch < splitMessage.length; mainSearch++) {
         if (splitMessage[mainSearch] === 'marcel') {
             console.log('Command: ', step); //DEBUGGING,,, LOGS EVERY COMMAND IN CONSOLE
+            
             var loadingLines = ['One sec...', 'Thinking...', 'Hold on...', 'Just a sec...', 'Just a moment...', 'Just a second...', 'Let me see...'];
             var loadingLinesRandom = Math.round(Math.random() * (loadingLines.length - 1));
             var missCount = 0;
@@ -222,7 +218,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 11;
                         }
-
+                        
                         try {
                             var id = message.author.id;
                             for (var outProfileSearch = 0; outProfileSearch < splitMessage.length; outProfileSearch++) {
@@ -245,7 +241,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
-
+                        
                         message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -558,11 +554,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 31;
                         }
-
-                        serverQueue = queue.get(message.guild.id);
-                        var musicLink = "$";
-                        var searchQuery = "$";
-
+                        
                         if (!message.guild) {
                             message.channel.send({
                                 embed: {
@@ -572,6 +564,12 @@ client.on('message', async message => {
                             });
                             break;
                         }
+
+                        var voiceChannel = message.member.voiceChannel;
+                        var serverQueue = queue.get(message.guild.id);
+                        var musicLink = "$";
+                        var searchQuery = "$";
+
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
@@ -581,7 +579,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
-
+                                                
                         if (serverQueue && !serverQueue.playing && splitMessagePreserved.length <= 2) {
                             serverQueue.playing = true;
                             serverQueue.connection.dispatcher.resume();
@@ -699,7 +697,7 @@ client.on('message', async message => {
                             try {
                                 var connection = await voiceChannel.join();
                                 queueConstruct.connection = connection;
-                                play(message.guild, queueConstruct.songs[0]);
+                                play(message.guild, queueConstruct.songs[0], voiceChannel);
                             } catch (error) {
                                 console.log(error);
                                 queue.delete(message.guild.id);
@@ -737,6 +735,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+                        var voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
@@ -766,6 +765,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue) {
                             if (serverQueue.skips.indexOf(client.users.get(message.author.id).id) === -1) {
                                 serverQueue.skips.push(client.users.get(message.author.id).id);
@@ -818,6 +818,7 @@ client.on('message', async message => {
                             });
                             break;
                         }
+                        var voiceChannel = message.member.voiceChannel;
                         if (!voiceChannel) {
                             message.channel.send({
                                 embed: {
@@ -838,6 +839,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue) {
                             serverQueue.songs = [];
                             serverQueue.connection.dispatcher.end();
@@ -853,7 +855,6 @@ client.on('message', async message => {
 
                     case 'nowplaying':
                     case 'np':
-
                         if (runCheck % 43 === 0) {
                             break;
                         } else {
@@ -870,6 +871,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue) {
                             message.channel.send({
                                 embed: {
@@ -904,6 +906,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue) {
                             message.channel.send({
                                 embed: {
@@ -939,6 +942,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue && serverQueue.playing) {
                             serverQueue.playing = false;
                             serverQueue.connection.dispatcher.pause();
@@ -982,6 +986,7 @@ client.on('message', async message => {
                             break;
                         }
 
+                        var serverQueue = queue.get(message.guild.id);
                         if (serverQueue && !serverQueue.playing) {
                             serverQueue.playing = true;
                             serverQueue.connection.dispatcher.resume();
@@ -1100,8 +1105,24 @@ client.on('message', async message => {
 
                                 for (var i = 0; i < 5; i++) {
                                     extract(redditPosts[0].urls[i]).then((websiteData) => {
-                                        title.push(websiteData.title);
-                                        summary.push(websiteData.description.replace(/\n/gi, " "));
+                                        try {
+                                            title.push(websiteData.title);
+                                        } catch (err) {
+                                            message.edit({
+                                                embed: {
+                                                    color: 16711680,
+                                                    description: "I tried to retrieve the latest news stories for you, but something went wrong along the way. Sorry!"
+                                                }
+                                            });
+                                            console.log(err);
+                                            return;
+                                        }
+                                        try {
+                                            summary.push(websiteData.description.replace(/\n/gi, " "));
+                                        } catch (err) {
+                                            console.log(err);
+                                        }
+                                        //DESCRIPTION BEING UNDEFINED ATTEMPT FIX HERE!!!!!!!!!!!!!!!!!!!!!!!!
                                         source.push(websiteData.source);
                                         url.push(websiteData.url);
                                         if (counter === 0) thumbnail = websiteData.image;
@@ -1195,7 +1216,7 @@ client.on('message', async message => {
 
 
 
-    function play(guild, song) {
+    function play(guild, song, voiceChannel) {
         const serverQueue = queue.get(guild.id);
 
         if (!song) {
@@ -1249,7 +1270,7 @@ client.on('message', async message => {
 
                     serverQueue.skips = [];
                     serverQueue.songs.shift();
-                    play(guild, serverQueue.songs[0]);
+                    play(guild, serverQueue.songs[0], voiceChannel);
                 }, 200);
             }).on('error', error => {
                 message.channel.send({
