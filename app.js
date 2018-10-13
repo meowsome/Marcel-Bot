@@ -1185,7 +1185,7 @@ client.on('message', async message => {
                         if (day === 6) dayImage += "saturday.png"
                         message.channel.send({
                             embed: {
-                                color: 16312092,
+                                color: 3066993,
                                 "image": {
                                     "url": dayImage
                                 }
