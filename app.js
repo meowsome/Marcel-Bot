@@ -1173,19 +1173,42 @@ client.on('message', async message => {
                             runCheck *= 71;
                         }
 
-                        var date = new Date();
-                        var day = date.getDay();
+                        var newDate = new Date();
+
+                        var weekDay = newDate.getDay();
                         var dayImage = "http://marcel.vulpix.pw/images/weekdays/";
-                        if (day === 0) dayImage += "sunday.jpg"
-                        if (day === 1) dayImage += "monday.jpg"
-                        if (day === 2) dayImage += "tuesday.jpg"
-                        if (day === 3) dayImage += "wednesday.jpg"
-                        if (day === 4) dayImage += "thursday.jpg"
-                        if (day === 5) dayImage += "friday.jpg"
-                        if (day === 6) dayImage += "saturday.png"
+                        if (weekDay === 0) dayImage += "sunday.jpg";
+                        if (weekDay === 1) dayImage += "monday.jpg";
+                        if (weekDay === 2) dayImage += "tuesday.jpg";
+                        if (weekDay === 3) dayImage += "wednesday.jpg";
+                        if (weekDay === 4) dayImage += "thursday.jpg";
+                        if (weekDay === 5) dayImage += "friday.jpg";
+                        if (weekDay === 6) dayImage += "saturday.png";
+
+                        var date = newDate.getDate();
+                        var daysArray = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        var day = daysArray[newDate.getDay()];
+                        var monthsArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        var month = monthsArray[newDate.getMonth()];
+                        var year = newDate.getFullYear();
+                        var dateExtra;
+                        if (date === 1 || date === 21 || date === 31) {
+                            dateExtra = 'st'
+                        }
+                        if (date === 2 || date === 22) {
+                            dateExtra = 'nd';
+                        }
+                        if (date === 3 || date === 23) {
+                            dateExtra = 'rd';
+                        }
+                        if (date >= 4 && date <= 20 || date >= 24 && date <= 30) {
+                            dateExtra = 'th';
+                        }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
+                                description: `Today is **${day}, ${month} ${date}${dateExtra}, ${year}**.`,
                                 "image": {
                                     "url": dayImage
                                 }
