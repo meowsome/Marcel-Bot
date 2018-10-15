@@ -101,7 +101,7 @@ client.on('message', async message => {
             var missCount = 0;
             var runCheck = 1;
 
-            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1 || step.search("day") != -1 || step.search("date") != -1 || step.search("today") != -1) runCheck *= 61;
+            if (step.search("weather") != -1 || step.search("play") != -1 || step.search("minecraft") != -1 || step.search("creators") != -1 || step.search("created") != -1 || step.search("avatar") != -1 || step.search("icon") != -1 || step.search("pfp") != -1 || step.search("picture") != -1 || step.search("profile") != -1 || step.search("user") != -1 || step.search("information") != -1 || step.search("user") != -1 || step.search("uptime") != -1 || step.search("invite") != -1 || step.search("8ball") != -1 || step.search("8-ball") != -1 || step.search("news") != -1 || step.search("date") != -1 || step.search("today") != -1 || step.search("dice") != -1) runCheck *= 61;
 
             for (var keywordSearch = 0; keywordSearch < splitMessage.length; keywordSearch++) {
                 switch (splitMessage[keywordSearch]) {
@@ -1164,7 +1164,6 @@ client.on('message', async message => {
                         })
                         break;
 
-                    case 'day':
                     case 'date':
                     case 'today':
                         if (runCheck % 71 === 0) {
@@ -1183,7 +1182,7 @@ client.on('message', async message => {
                         if (weekDay === 3) dayImage += "wednesday.jpg";
                         if (weekDay === 4) dayImage += "thursday.jpg";
                         if (weekDay === 5) dayImage += "friday.jpg";
-                        if (weekDay === 6) dayImage += "saturday.png";
+                        if (weekDay === 6) dayImage += "saturday.jpg";
 
                         var date = newDate.getDate();
                         var daysArray = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -1211,6 +1210,24 @@ client.on('message', async message => {
                                 description: `Today is **${day}, ${month} ${date}${dateExtra}, ${year}**.`,
                                 "image": {
                                     "url": dayImage
+                                }
+                            }
+                        });
+                        break;
+                        
+                    case 'dice':
+                        if (runCheck % 73 === 0) {
+                            break;
+                        } else {
+                            runCheck *= 73;
+                        }
+                        var diceImagesRandom = Math.round(Math.random() * 5);
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                description: `You rolled a **${diceImagesRandom}**`,
+                                "image": {
+                                    "url": `http://marcel.vulpix.pw/images/dice/${diceImagesRandom}.png`
                                 }
                             }
                         });
