@@ -1206,7 +1206,7 @@ client.on('message', async message => {
                             }
                         });
                         break;
-
+                        
                     case 'dice':
                         if (runCheck % 73 === 0) {
                             break;
