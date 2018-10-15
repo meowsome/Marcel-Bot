@@ -1213,7 +1213,7 @@ client.on('message', async message => {
                         } else {
                             runCheck *= 73;
                         }
-                        var diceImagesRandom = Math.round(Math.random() * 5);
+                        var diceImagesRandom = Math.round(Math.random() * 5 + 1);
                         message.channel.send({
                             embed: {
                                 color: 3066993,
