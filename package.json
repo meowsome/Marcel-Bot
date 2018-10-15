@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "article-parser": "^2.3.7",
-    "better-cleverbot-io": "^1.0.2",
     "discord.js": "^11.3.2",
     "feed-to-json": "^1.0.3",
     "fetch-subreddit": "^3.0.0",

@@ -8,12 +8,6 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
-const Cleverbot = require('better-cleverbot-io');
-const cleverbot = new Cleverbot({
-    user: process.env.CLEVERBOTNAME,
-    key: process.env.CLEVERBOTKEY,
-    nick: 'marcelsession'
-});
 const {
     fetchSubreddit
 } = require('fetch-subreddit');
@@ -83,6 +77,8 @@ client.on("guildDelete", guild => {
         bitrate: 8000
     });
 });
+
+var randomStatements = ['I like cheese', 'I can\'t remember if it\'s your time for medication or mine', 'I do whatever my Rice Crispies tell me to do', 'Would you like some popcorn?', 'Even my issues have issues', 'This is Bob. Bob likes you. Bob likes sharp things. I suggest you run from Bob.', 'Tomorrow has been cancelled due to lack of interest.', 'Come to the dark side, we have cookies', 'Ha ha! I don\'t get it.', 'To be, or not to be: that is the question', 'My nose is a communist', 'Wear short sleeves. Support your right to bare arms!', 'Cheese...Milk\'s leap towards immortality!', 'Change is good, but dollars are better', 'Occifer I swear to drunk I\'m not as god as you think I am!', 'The quick brown fox jumps over the lazy dog.', 'Hi how are you', 'Get out of my kitchen!!!!!!!!!!!', 'Lol', 'Mwahahaha!', 'Beware!', 'owo', 'owo?', 'uwu', 'Harry Styles', 'ey b0ss', 'Has anyone really been far even as decided to use even go want to do look more like?', 'I honestly have no idea.', 'It\'s common sense!', 'You\'ve got to be kidding me', 'Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo', 'I\'m pregnant', 'Have you ever had a dream?', 'I play Minecraft', 'Are you a bot?', 'How so.', 'How are you from?', 'How was your day?', 'Don\'t smoke coffee', 'Why sentence this you need?', 'Why would an otter need an ice cream sandwich?', 'Who\'s your favorite music artist?', 'Do you like pie?', 'Don\'t panic', 'I can tie a rat in half', 'The name\'s bond.', 'What do we want??', 'Are you my Uber?', 'Autocorrect makes me type things I didn\'t Nintendo', 'Insect jokes really bug me', 'Always give 100%, except if it\'s blood', 'Octopuses are all suckers', 'Am I under arrest??', 'STOP RESISTING', 'I am a legal U.S. citizen', 'Turn left, right?', 'Yes', 'No', 'Maybe', 'Idk', 'Why do you ask?', 'Jumbo shrimp', 'aaaaaaa', 'I\'m stupid :(', 'Wassup', 'I am a Leafeon', 'I\'ve got ham but I\'m not a hamster', 'That\'s one small step for man, one giant leap for mankind.', 'Beep boop', 'Is water wet?', 'Just Google it', 'Just Bing it', 'Run.', 'Make love, not bugs.', 'Maybe you can live on the moon in next century', 'Only listen to fortune cookie, disregard all other fortune telling units', 'The early bird gets the worm, but the second mouse gets the cheese.', 'There\'s no such thing as an ordinary cat', 'No snowflake in an avalanche ever feels responsible', 'What\'s the speed of dark?', 'When in anger, sing the alphabet', 'Life is not a struggle. It\'s a wiggle', 'Discord!', 'Never gonna give you up, never gonna let you down, never gonna run around and desert you', 'You just ate cat', 'Error 404', 'Foot: A device for finding furnature in the dark.', 'Your pet is planning to eat you', 'I cannot help you', 'Hru?', 'Are you sleeping?', 'I\'m tired', 'Do you like me?', 'You are heading in the right direction', 'Never trust a dog to watch your food', 'Forget the cake, go for the icing', 'Listen to your brain, it has lots of information!', 'Dumbledore', 'Now is the time, do not haste any longer', 'I wanna be like a caterpillar. Eat a lot. Sleep for a while. Wake up beautiful', 'You\'re pretty cool', 'That\'s offensive', 'Would you like something to drink?', 'The best kind of frenzy is a puppy frenzy!', 'Examine your texts closely!', 'Time to synthesize this dough into some cookies.', 'This doesn\'t look like a very well-constructed argument.', 'Some very important stylish effects going on here.', 'A fairly sophisticated move', 'Noble knight, prepare to slay the dragon!', 'hhhhhhhhhh', 'Ewwww', 'Nooooo', 'I am Marcel!!!', 'What is my IP?', 'Canadians', 'What year is it?', 'What time is it?', 'What is love?', 'What are these strawberries doing on my nipples I need them for the fruit salad', 'What would a chair look like if your knees bent the other way?', 'What would you do?', 'Follow me on Twitter!', 'Foxes', 'Booty', 'Pirates', 'I wanna go home', 'I like to tape my thumbs to my hands to see what it would be like to be a dinosaur', 'Sometimes when I\'m alone I use comic sans', 'I am poem', 'Why can\'t I own a Canadian?', 'Yes master?', 'I Did the Macarena with a Homeless Guy Because Big Bird Said to and He’s my Leader', 'Firefox has crashed and needs cuddles', 'My cat and I have decided to stay in tonight', 'My cat ate my gymsuit', 'My cat wants to get an abortion', 'My cat was right about you', 'Put that mayonnaise on your child', 'Sometimes I like to lay on the floor and pretend I\'m a crumb', 'There is a deer in my car', 'Biscuits are never boring', 'That awkward moment when you\'re chilling in the park and Bruno Mars walks by dragging a piano', 'What if one day you wake up and you were a chicken nugget', 'Can I vacuum my dog?', 'Can I vacuum glass?', 'I\'m vaping alcohol', 'What if Google was deleted and we couldn\'t Google what happened to Google', 'Help I accidentally set my dog on fire', 'I can see you', 'What do you call a zombie prostitute?', 'What do you call an alligator in a vest?', 'Was Flo Rida born in Florida?', 'Bacon is a little hug from God', 'Facebook is like a refrigerator', 'I love when I buy a bag of air and the company is nice enough to put some chips in it', 'My dog is racist', 'My cat is prettier than me', 'There\'s a bomb in the lasagna!', 'Honey I think the cat is done charging', 'Who threw that ham at me?', 'I like to hang glide on a dorito', 'Robots are everywhere and they eat old people\'s medicine for fuel', 'Johnny Depp is my mailman', 'That awkward moment when you get in the van and there\'s no candy', 'I always forget how that wild cat called! Jaguar or leopard? :leopard::thinking:', 'No time to explain! :scooter: + :baby_chick: = :metal:', 'Please, talk to this carrot :carrot: :rofl:', 'Yesterday I accidentally confused tomato with pepper! :fire: :sweat_smile:', 'Have you ever seen a rabbit who eats a grass? :rabbit2: :heart_eyes: :heart_eyes: :heart_eyes:', ':dragon_face: His fire breath is going to burn everything around! :fire:', ':heart_eyes: What a cute owl! :owl:', 'Wanna see how bird phoenix borns?', 'Hey! Wanna a cocktail in a coconut?', 'Have you ever seen a walrus-woodcutter? We got one :stuck_out_tongue_winking_eye:', 'Do you like watching how hourglasses work? :hourglass:', 'The real chef must be.... Pink! Do you agree?', 'Are you sure, that Autumn isn\'t the best time for surfing?', 'Haa! Have you ever seen houses on horns?!', 'Who else has a broken heart? :broken_heart:', 'Let\'s dance with this chick!', 'It\'s a rising star, right?', 'You\'re cute', 'The journey to the Jurassic period has already begun!', 'I bet you won\'t find a "D" inside :nerd:', 'This dress is waiting for its princess!'];
 
 client.on('message', async message => {
     if (message.author.bot) return;
@@ -1075,8 +1071,13 @@ client.on('message', async message => {
                                         }
                                     });
                                 } else {
-                                    message.delete(1);
-                                    cleverbotWork();
+                                    var randomStatementsRandom = Math.round(Math.random() * (randomStatements.length - 1));
+                                    message.edit({
+                                        embed: {
+                                            color: 3066993,
+                                            description: randomStatements[randomStatementsRandom]
+                                        }
+                                    })
                                 }
                             });
                         });
@@ -1237,52 +1238,17 @@ client.on('message', async message => {
                         missCount++;
                 }
                 if (missCount === splitMessage.length) {
-                    cleverbotWork();
-                }
-            }
-        }
-    }
-
-
-
-    function cleverbotWork() {
-        var cleverbotQuestion = splitMessage.join(" ").replace(/marcel/i, "");
-        var randomStatements = ['I like cheese', 'I can\'t remember if it\'s your time for medication or mine', 'I do whatever my Rice Crispies tell me to do', 'Would you like some popcorn?', 'Even my issues have issues', 'This is Bob. Bob likes you. Bob likes sharp things. I suggest you run from Bob.', 'Tomorrow has been cancelled due to lack of interest.', 'Come to the dark side, we have cookies', 'Ha ha! I don\'t get it.', 'To be, or not to be: that is the question', 'My nose is a communist', 'Wear short sleeves. Support your right to bare arms!', 'Cheese...Milk\'s leap towards immortality!', 'Change is good, but dollars are better', 'Occifer I swear to drunk I\'m not as god as you think I am!', 'The quick brown fox jumps over the lazy dog.', 'Hi how are you', 'Get out of my kitchen!!!!!!!!!!!', 'Lol', 'Mwahahaha!', 'Beware!', 'owo', 'owo?', 'uwu', 'Harry Styles', 'ey b0ss', 'Has anyone really been far even as decided to use even go want to do look more like?', 'I honestly have no idea.', 'It\'s common sense!', 'You\'ve got to be kidding me', 'Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo', 'I\'m pregnant', 'Have you ever had a dream?', 'I play Minecraft', 'Are you a bot?', 'How so.', 'How are you from?', 'How was your day?', 'Don\'t smoke coffee', 'Why sentence this you need?', 'Why would an otter need an ice cream sandwich?', 'Who\'s your favorite music artist?', 'Do you like pie?', 'Don\'t panic', 'I can tie a rat in half', 'The name\'s bond.', 'What do we want??', 'Are you my Uber?', 'Autocorrect makes me type things I didn\'t Nintendo', 'Insect jokes really bug me', 'Always give 100%, except if it\'s blood', 'Octopuses are all suckers', 'Am I under arrest??', 'STOP RESISTING', 'I am a legal U.S. citizen', 'Turn left, right?', 'Yes', 'No', 'Maybe', 'Idk', 'Why do you ask?', 'Jumbo shrimp', 'aaaaaaa', 'I\'m stupid :(', 'Wassup', 'I am a Leafeon', 'I\'ve got ham but I\'m not a hamster', 'That\'s one small step for man, one giant leap for mankind.', 'Beep boop', 'Is water wet?', 'Just Google it', 'Just Bing it', 'Run.', 'Make love, not bugs.', 'Maybe you can live on the moon in next century', 'Only listen to fortune cookie, disregard all other fortune telling units', 'The early bird gets the worm, but the second mouse gets the cheese.', 'There\'s no such thing as an ordinary cat', 'No snowflake in an avalanche ever feels responsible', 'What\'s the speed of dark?', 'When in anger, sing the alphabet', 'Life is not a struggle. It\'s a wiggle', 'Discord!', 'Never gonna give you up, never gonna let you down, never gonna run around and desert you', 'You just ate cat', 'Error 404', 'Foot: A device for finding furnature in the dark.', 'Your pet is planning to eat you', 'I cannot help you', 'Hru?', 'Are you sleeping?', 'I\'m tired', 'Do you like me?', 'You are heading in the right direction', 'Never trust a dog to watch your food', 'Forget the cake, go for the icing', 'Listen to your brain, it has lots of information!', 'Dumbledore', 'Now is the time, do not haste any longer', 'I wanna be like a caterpillar. Eat a lot. Sleep for a while. Wake up beautiful', 'You\'re pretty cool', 'That\'s offensive', 'Would you like something to drink?', 'The best kind of frenzy is a puppy frenzy!', 'Examine your texts closely!', 'Time to synthesize this dough into some cookies.', 'This doesn\'t look like a very well-constructed argument.', 'Some very important stylish effects going on here.', 'A fairly sophisticated move', 'Noble knight, prepare to slay the dragon!', 'hhhhhhhhhh', 'Ewwww', 'Nooooo', 'I am Marcel!!!', 'What is my IP?', 'Canadians', 'What year is it?', 'What time is it?', 'What is love?', 'What are these strawberries doing on my nipples I need them for the fruit salad', 'What would a chair look like if your knees bent the other way?', 'What would you do?', 'Follow me on Twitter!', 'Foxes', 'Booty', 'Pirates', 'I wanna go home', 'I like to tape my thumbs to my hands to see what it would be like to be a dinosaur', 'Sometimes when I\'m alone I use comic sans', 'I am poem', 'Why can\'t I own a Canadian?', 'Yes master?', 'I Did the Macarena with a Homeless Guy Because Big Bird Said to and He’s my Leader', 'Firefox has crashed and needs cuddles', 'My cat and I have decided to stay in tonight', 'My cat ate my gymsuit', 'My cat wants to get an abortion', 'My cat was right about you', 'Put that mayonnaise on your child', 'Sometimes I like to lay on the floor and pretend I\'m a crumb', 'There is a deer in my car', 'Biscuits are never boring', 'That awkward moment when you\'re chilling in the park and Bruno Mars walks by dragging a piano', 'What if one day you wake up and you were a chicken nugget', 'Can I vacuum my dog?', 'Can I vacuum glass?', 'I\'m vaping alcohol', 'What if Google was deleted and we couldn\'t Google what happened to Google', 'Help I accidentally set my dog on fire', 'I can see you', 'What do you call a zombie prostitute?', 'What do you call an alligator in a vest?', 'Was Flo Rida born in Florida?', 'Bacon is a little hug from God', 'Facebook is like a refrigerator', 'I love when I buy a bag of air and the company is nice enough to put some chips in it', 'My dog is racist', 'My cat is prettier than me', 'There\'s a bomb in the lasagna!', 'Honey I think the cat is done charging', 'Who threw that ham at me?', 'I like to hang glide on a dorito', 'Robots are everywhere and they eat old people\'s medicine for fuel', 'Johnny Depp is my mailman', 'That awkward moment when you get in the van and there\'s no candy', 'I always forget how that wild cat called! Jaguar or leopard? :leopard::thinking:', 'No time to explain! :scooter: + :baby_chick: = :metal:', 'Please, talk to this carrot :carrot: :rofl:', 'Yesterday I accidentally confused tomato with pepper! :fire: :sweat_smile:', 'Have you ever seen a rabbit who eats a grass? :rabbit2: :heart_eyes: :heart_eyes: :heart_eyes:', ':dragon_face: His fire breath is going to burn everything around! :fire:', ':heart_eyes: What a cute owl! :owl:', 'Wanna see how bird phoenix borns?', 'Hey! Wanna a cocktail in a coconut?', 'Have you ever seen a walrus-woodcutter? We got one :stuck_out_tongue_winking_eye:', 'Do you like watching how hourglasses work? :hourglass:', 'The real chef must be.... Pink! Do you agree?', 'Are you sure, that Autumn isn\'t the best time for surfing?', 'Haa! Have you ever seen houses on horns?!', 'Who else has a broken heart? :broken_heart:', 'Let\'s dance with this chick!', 'It\'s a rising star, right?', 'You\'re cute', 'The journey to the Jurassic period has already begun!', 'I bet you won\'t find a "D" inside :nerd:', 'This dress is waiting for its princess!'];
-        var randomStatementsRandom = Math.round(Math.random() * (randomStatements.length - 1));
-
-        message.channel.send({
-            embed: {
-                color: 16312092,
-                description: loadingLines[loadingLinesRandom]
-            }
-        }).then(function (message) {
-            cleverbot.create().then(() => {
-                cleverbot.ask(cleverbotQuestion).then(response => {
-                    message.edit({
-                        embed: {
-                            color: 3066993,
-                            description: response
-                        }
-                    });
-                }).catch(err => {
-                    message.edit({
+                    var randomStatementsRandom = Math.round(Math.random() * (randomStatements.length - 1));
+                    message.channel.send({
                         embed: {
                             color: 3066993,
                             description: randomStatements[randomStatementsRandom]
                         }
-                    });
-                });
-            });
-        }).catch(err => {
-            message.edit({
-                embed: {
-                    color: 3066993,
-                    description: randomStatements[randomStatementsRandom]
+                    })
                 }
-            });
-        });
+            }
+        }
     }
-
 
 
     function play(guild, song, voiceChannel) {
