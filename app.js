@@ -1044,7 +1044,6 @@ client.on('message', async message => {
                             }
                         }).then(function (message) {
                             wolfram.query(wolframQuestion, function (err, result) {
-                                console.log(result);
                                 if (!result) {
                                     message.edit({
                                         embed: {
