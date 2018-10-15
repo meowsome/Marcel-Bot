@@ -31,15 +31,6 @@ client.on('ready', () => {
             description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
         }
     });
-
-    client.channels.get('397889669989400596').edit({
-        name: `${client.users.size}-`,
-        bitrate: 8000
-    });
-    client.channels.get('397889346990112768').edit({
-        name: `${client.guilds.size}-`,
-        bitrate: 8000
-    });
 });
 
 client.on("guildCreate", guild => {
@@ -1053,6 +1044,7 @@ client.on('message', async message => {
                             }
                         }).then(function (message) {
                             wolfram.query(wolframQuestion, function (err, result) {
+                                console.log(result);
                                 if (!result) {
                                     message.edit({
                                         embed: {
@@ -1215,7 +1207,7 @@ client.on('message', async message => {
                             }
                         });
                         break;
-                        
+
                     case 'dice':
                         if (runCheck % 73 === 0) {
                             break;
@@ -1249,6 +1241,7 @@ client.on('message', async message => {
             }
         }
     }
+
 
 
     function play(guild, song, voiceChannel) {
