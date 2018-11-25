@@ -1053,11 +1053,10 @@ client.on('message', async message => {
                                     });
                                 } else if (result.queryresult.$.success.toString() === 'true') {
                                     var msg;
-                                    console.log(result.queryresult.pod[1].subpod[0].plaintext.toString().length);
                                     if (result.queryresult.pod[1].subpod[0].plaintext.toString().length < 2048) {
                                         msg = result.queryresult.pod[1].subpod[0].plaintext.toString();
                                     } else {
-                                        msg = result.queryresult.pod[1].subpod[0].plaintext.toString().slice(0,2048) + "...";
+                                        msg = result.queryresult.pod[1].subpod[0].plaintext.toString().slice(0,2045) + "...";
                                     }
                                     message.edit({
                                         embed: {
