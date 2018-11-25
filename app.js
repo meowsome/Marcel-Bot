@@ -649,24 +649,26 @@ client.on('message', async message => {
                         musicLink = "$";
                         searchQuery = "$";
 
+                        var dur;
+                        var secs = video.duration.seconds;
+                        console.log(video.duration.seconds < 9);
+                        if (video.duration.seconds < 9) secs = "0" + video.duration.seconds;
+                        var mins = video.duration.minutes;
+                        if (video.duration.minutes < 9) mins = "0" + video.duration.minutes;
                         if (video.duration.hours > 0) {
-                            var song = {
-                                id: video.id,
-                                title: video.title,
-                                description: `${video.description.substring(0,150)}...`,
-                                url: `https://www.youtube.com/watch?v=${video.id}`,
-                                thumbnail: video.thumbnails.default.url,
-                                duration: `${video.duration.hours}:${video.duration.minutes}:${video.duration.seconds}`
-                            };
+                            if (video.duration.hours < 9) video.duration.hours = "0" + video.duration.hours;
+                            dur = `${video.duration.hours}:${mins}:${secs}`;
                         } else {
-                            var song = {
-                                id: video.id,
-                                title: video.title,
-                                description: `${video.description.substring(0,150)}...`,
-                                url: `https://www.youtube.com/watch?v=${video.id}`,
-                                thumbnail: video.thumbnails.default.url,
-                                duration: `${video.duration.minutes}:${video.duration.seconds}`
-                            };
+                            dur = `${mins}:${secs}`;
+                        }
+
+                        var song = {
+                            id: video.id,
+                            title: video.title,
+                            description: `${video.description.substring(0,150)}...`,
+                            url: `https://www.youtube.com/watch?v=${video.id}`,
+                            thumbnail: video.thumbnails.default.url,
+                            duration: dur
                         }
 
                         if (!serverQueue) {
