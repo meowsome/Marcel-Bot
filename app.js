@@ -1052,10 +1052,17 @@ client.on('message', async message => {
                                         }
                                     });
                                 } else if (result.queryresult.$.success.toString() === 'true') {
+                                    var msg;
+                                    console.log(result.queryresult.pod[1].subpod[0].plaintext.toString().length);
+                                    if (result.queryresult.pod[1].subpod[0].plaintext.toString().length < 2048) {
+                                        msg = result.queryresult.pod[1].subpod[0].plaintext.toString();
+                                    } else {
+                                        msg = result.queryresult.pod[1].subpod[0].plaintext.toString().slice(0,2048) + "...";
+                                    }
                                     message.edit({
                                         embed: {
                                             color: 3066993,
-                                            description: result.queryresult.pod[1].subpod[0].plaintext.toString(),
+                                            description: msg,
                                             "footer": {
                                                 "text": result.queryresult.pod[0].subpod[0].plaintext.toString()
                                             }
@@ -1114,7 +1121,6 @@ client.on('message', async message => {
                                         } catch (err) {
                                             console.log(err);
                                         }
-                                        //DESCRIPTION BEING UNDEFINED ATTEMPT FIX HERE!!!!!!!!!!!!!!!!!!!!!!!!
                                         source.push(websiteData.source);
                                         url.push(websiteData.url);
                                         if (counter === 0) thumbnail = websiteData.image;
