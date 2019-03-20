@@ -327,7 +327,6 @@ client.on('message', async message => {
                             runCheck *= 19;
                         }
 
-                        console.log(splitMessage.join(" "));
                         var weatherMessage = splitMessage.join(" ").replace(/marcel|,|weather|whats|what's|what|the+|like+|in+|is+/ig, "");
                         if (weatherMessage.indexOf("\"") === weatherMessage.lastIndexOf("\"")) {
                             var searchTerm = weatherMessage;
@@ -664,7 +663,6 @@ client.on('message', async message => {
 
                         var dur;
                         var secs = video.duration.seconds;
-                        console.log(video.duration.seconds < 9);
                         if (video.duration.seconds < 9) secs = "0" + video.duration.seconds;
                         var mins = video.duration.minutes;
                         if (video.duration.minutes < 9) mins = "0" + video.duration.minutes;
