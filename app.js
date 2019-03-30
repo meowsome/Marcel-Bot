@@ -1064,7 +1064,7 @@ client.on('message', async message => {
                                             description: "Sorry, something went wrong! 〒﹏〒  [Click here to learn more](http://marcel.vulpix.pw/#wolfram_error)"
                                         }
                                     });
-                                } else if (result.queryresult.$.success.toString() === 'true') {
+                                } else if (result.queryresult.$.numpods > 0) {
                                     var msg;
                                     if (result.queryresult.pod[1].subpod[0].plaintext.toString().length < 2048) {
                                         msg = result.queryresult.pod[1].subpod[0].plaintext.toString();
