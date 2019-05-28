@@ -1312,9 +1312,7 @@ function ingi() {
     request("https://faexport.boothale.net/user/ingi/journals.json?full=1", function (err, response, body) {
         var journals = JSON.parse(body);
 
-        console.log(journals.length, fs.readFileSync('ingi.txt', 'utf8'));
-
-        if (journals.length != fs.readFileSync('ingi.txt', 'utf8')) {
+        if (journals.length != parseInt(fs.readFileSync('ingi.txt', 'utf8'))) {
             fs.writeFile('ingi.txt', journals.length, 'utf-8', function (err) {});
 
             client.fetchUser('172151577480527878').then((user) => {
@@ -1324,7 +1322,7 @@ function ingi() {
     });
 }
 ingi();
-setInterval(ingi, 6000);
+setInterval(ingi, 3600000);
 //////////////////////END INGI////////////////////////////////////
 
 
