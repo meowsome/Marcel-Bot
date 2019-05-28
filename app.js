@@ -1304,4 +1304,28 @@ client.on('message', async message => {
 });
 
 
+////////////////TEMPORARY INGI FURAFFINITY JOURNAL TRACKER FOR PERSONAL USE//////////////
+function ingi() {
+    var request = require('request');
+    var fs = require('fs');
+    //Remove FS when done.
+    request("https://faexport.boothale.net/user/ingi/journals.json?full=1", function (err, response, body) {
+        var journals = JSON.parse(body);
+
+        console.log(journals.length, fs.readFileSync('ingi.txt', 'utf8'));
+
+        if (journals.length != fs.readFileSync('ingi.txt', 'utf8')) {
+            fs.writeFile('ingi.txt', journals.length, 'utf-8', function (err) {});
+
+            client.fetchUser('172151577480527878').then((user) => {
+                user.send('**New Ingi Journal: ' + journals[0].title + '**\n\n' + journals[0].description.replace(/<(?:.|\n)*?>/g, "") + "\nPosted on " + journals[0].posted + "\n" + journals[0].link);
+            });
+        }
+    });
+}
+ingi();
+setInterval(ingi, 6000);
+//////////////////////END INGI////////////////////////////////////
+
+
 client.login(process.env.TOKEN);
