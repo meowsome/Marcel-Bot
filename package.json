@@ -2,7 +2,7 @@
   "name": "marcel",
   "version": "1.0.0",
   "description": "A cute and helpful Discord bot!",
-  "repository": "http://marcel.meowso.me",
+  "repository": "https://marcel.meowso.me",
   "main": "app.js",
   "engines": {
     "node": "8.9.3"
