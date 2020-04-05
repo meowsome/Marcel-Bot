@@ -21,7 +21,7 @@
     "opusscript": "0.0.6",
     "simple-youtube-api": "^5.0.2",
     "weather-js": "^2.0.0",
-    "ws": "^6.1.0",
+    "ws": "^6.2.1",
     "ytdl-core": "^0.26.3"
   }
 }
