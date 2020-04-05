@@ -507,7 +507,6 @@ client.on('message', async message => {
                     }
 
                     var permissions = voiceChannel.permissionsFor(message.client.user);
-                    console.log(permissions);
                     if (!permissions.has('CONNECT')) {
                         message.channel.send({
                             embed: {
@@ -613,7 +612,7 @@ client.on('message', async message => {
                         try {
                             console.log(voiceChannel);
                             //error here:
-                            var connection = voiceChannel.join();
+                            var connection = await voiceChannel.join();
                             console.log('joined!');
                             console.log(connection);
                             queueConstruct.connection = connection;
