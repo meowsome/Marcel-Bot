@@ -610,11 +610,11 @@ client.on('message', async message => {
                         queue.set(message.guild.id, queueConstruct);
                         queueConstruct.songs.push(song);
                         try {
-                            // console.log(voiceChannel);
+                            console.log(voiceChannel);
                             //error here:
                             var connection = await voiceChannel.join();
                             console.log('joined!');
-                            // console.log(connection);
+                            console.log(connection);
                             queueConstruct.connection = connection;
                             play(message.guild, queueConstruct.songs[0], voiceChannel);
                         } catch (error) {
