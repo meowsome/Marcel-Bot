@@ -612,7 +612,7 @@ client.on('message', async message => {
                         try {
                             console.log(voiceChannel);
                             //error here:
-                            var connection = voiceChannel.join();
+                            var connection = await voiceChannel.join();
                             console.log('joined!');
                             console.log(connection);
                             queueConstruct.connection = connection;
