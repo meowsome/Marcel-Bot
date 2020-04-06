@@ -20,7 +20,8 @@ client.on('ready', () => {
 
     client.user.setPresence({
         game: {
-            name: 'Say my name and "help" for help',
+            // name: 'Say my name and "help" for help',
+            name: 'Music commands are back! Type my name and "play" for more.',
             type: 0
         }
     });
@@ -466,13 +467,6 @@ client.on('message', async message => {
                     });
                 } else if (a == "music" || a == "play") {
                     alreadyRan = true;
-
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
 
                     if (!message.guild) {
                         message.channel.send({
