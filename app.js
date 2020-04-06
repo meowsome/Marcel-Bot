@@ -252,7 +252,7 @@ client.on('message', async message => {
                     message.channel.send({
                         embed: {
                             color: 3066993,
-                            description: "Send somebody this URL to invite me to their Discord server!\n```https://goo.gl/zjGTbq```"
+                            description: "Send somebody this URL to invite me to their Discord server!\n```http://marcel.meowso.me/invite```"
                         }
                     });
                 } else if (a == "weather") {
