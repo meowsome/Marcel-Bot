@@ -538,6 +538,13 @@ client.on('message', async message => {
                         searchQuery = musicMessage.replace(/marcel|play|music/gi, " ");
                     }
 
+                    if (searchQuery.trim().length == 0) return message.channel.send({
+                        embed: {
+                            color: 16711680,
+                            description: "Please enter a song name, and I'll play it!"
+                        }
+                    });;
+
                     if (musicLink != "$") {
                         try {
                             var video = await youtube.getVideo(musicLink);
