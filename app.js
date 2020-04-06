@@ -1039,7 +1039,7 @@ client.on('message', async message => {
         });
     }
 
-    function play(guild, song, voiceChannel) {
+    async function play(guild, song, voiceChannel) {
         var serverQueue = queue.get(guild.id);
 
         if (!song) {
