@@ -1,13 +1,13 @@
 const Discord = require('discord.js');
-const Util = require('discord.js');
+const request = require('request');
 const client = new Discord.Client();
 const weather = require('weather-js');
 const wolframClient = require('node-wolfram');
-const wolfram = new wolframClient(process.env.WOLFRAM);
+const wolfram = new wolframClient('QWAEHQ-LKKXR6VE5K');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
-const youtube = new YouTube(process.env.YOUTUBE);
+const youtube = new YouTube("AIzaSyA0sjK_iVXKFY4KL2JtLgjr_P2BCVjYKvY");
 const {
     fetchSubreddit
 } = require('fetch-subreddit');
@@ -343,7 +343,6 @@ client.on('message', async message => {
                     var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                     var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
                     var eightBallResponsesRandom = Math.round(Math.random() * (eightBallResponses.length - 1));
-                    var request = require('request');
                     var url = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=%27+' + simpleResponses[eightBallResponsesRandom];
 
                     request(url, function (err, response, body) {
@@ -358,12 +357,19 @@ client.on('message', async message => {
 
                         body = JSON.parse(body);
 
+                        var image;
+                        try {
+                            image = body.data.image_original_url
+                        } catch (err) {
+                            console.log(err);
+                        }
+
                         message.channel.send({
                             embed: {
                                 color: 3066993,
                                 description: "The Magic 8-Ball says... \n\n*" + eightBallResponses[eightBallResponsesRandom] + "*\n\n",
                                 "image": {
-                                    "url": body.data.image_original_url
+                                    "url": image
                                 }
                             }
                         });
@@ -386,7 +392,6 @@ client.on('message', async message => {
                         }
                     }
 
-                    var request = require('request');
                     var url = 'https://mc-api.net/v3/server/ping/' + address[0] + ':' + address[1];
 
                     message.channel.send({
@@ -607,19 +612,20 @@ client.on('message', async message => {
                             playing: true,
                             skips: []
                         };
+
                         queue.set(message.guild.id, queueConstruct);
                         queueConstruct.songs.push(song);
+
                         try {
-                            console.log(voiceChannel);
-                            //error here:
                             var connection = await voiceChannel.join();
-                            console.log('joined!');
-                            console.log(connection);
                             queueConstruct.connection = connection;
+
                             play(message.guild, queueConstruct.songs[0], voiceChannel);
                         } catch (error) {
                             console.log(error);
+
                             queue.delete(message.guild.id);
+
                             return message.channel.send({
                                 embed: {
                                     color: 16711680,
@@ -629,6 +635,7 @@ client.on('message', async message => {
                         }
                     } else {
                         serverQueue.songs.push(song);
+
                         return message.channel.send({
                             embed: {
                                 color: 3066993,
@@ -637,285 +644,249 @@ client.on('message', async message => {
                         });
                     }
                 } else if (a == "skip") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
+                    var voiceChannel = message.member.voiceChannel;
+                    if (!voiceChannel) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "You need to be in a voice channel to skip music!"
+                            }
+                        });
+                        return;
+                    }
+
+                    var permissions = voiceChannel.permissionsFor(message.client.user);
+                    if (!permissions.has('CONNECT')) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "I don't have permission to **connect** to the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
+                            }
+                        });
+                        return;
+                    } else if (!permissions.has('SPEAK')) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "I don't have permission to **speak** in the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
+                            }
+                        });
+                        return;
+                    }
+
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue) {
+                        if (serverQueue.skips.indexOf(client.users.get(message.author.id).id) === -1) {
+                            serverQueue.skips.push(client.users.get(message.author.id).id);
+                            var skipRequiredAmount = Math.round(serverQueue.voiceChannel.members.size / 2);
+                            if (serverQueue.skips.length === skipRequiredAmount) {
+                                serverQueue.connection.dispatcher.end();
+                            } else {
+                                message.channel.send({
+                                    embed: {
+                                        color: 16312092,
+                                        description: `There's currently **${serverQueue.skips.length}** out of **${skipRequiredAmount}** votes required to skip the current song`
+                                    }
+                                });
+                            }
+                        } else {
+                            message.channel.send({
+                                embed: {
+                                    color: 16711680,
+                                    description: "You've already voted to skip the current song!"
+                                }
+                            });
+                            return;
                         }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
-                    // var voiceChannel = message.member.voiceChannel;
-                    // if (!voiceChannel) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "You need to be in a voice channel to skip music!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
-
-                    // var permissions = voiceChannel.permissionsFor(message.client.user);
-                    // if (!permissions.has('CONNECT')) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "I don't have permission to **connect** to the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
-                    //         }
-                    //     });
-                    //     return;
-                    // } else if (!permissions.has('SPEAK')) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "I don't have permission to **speak** in the **" + voiceChannel + "** voice channel. Please give me access so I can play!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
-
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue) {
-                    //     if (serverQueue.skips.indexOf(client.users.get(message.author.id).id) === -1) {
-                    //         serverQueue.skips.push(client.users.get(message.author.id).id);
-                    //         var skipRequiredAmount = Math.round(serverQueue.voiceChannel.members.size / 2);
-                    //         if (serverQueue.skips.length === skipRequiredAmount) {
-                    //             serverQueue.connection.dispatcher.end();
-                    //         } else {
-                    //             message.channel.send({
-                    //                 embed: {
-                    //                     color: 16312092,
-                    //                     description: `There's currently **${serverQueue.skips.length}** out of **${skipRequiredAmount}** votes required to skip the current song`
-                    //                 }
-                    //             });
-                    //         }
-                    //     } else {
-                    //         message.channel.send({
-                    //             embed: {
-                    //                 color: 16711680,
-                    //                 description: "You've already voted to skip the current song!"
-                    //             }
-                    //         });
-                    //         return;
-                    //     }
-                    // } else {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There's nothing currently playing, silly!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    } else {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There's nothing currently playing, silly!"
+                            }
+                        });
+                        return;
+                    }
                 } else if (a == "stop" || a == "leave" || a == "clear") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
                     
-                    // var voiceChannel = message.member.voiceChannel;
-                    // if (!voiceChannel) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "You need to be in a voice channel to stop music!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    var voiceChannel = message.member.voiceChannel;
+                    if (!voiceChannel) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "You need to be in a voice channel to stop music!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // if (!message.member.hasPermission('MUTE_MEMBERS')) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "You don't have adequate permissions to stop me from playing music! If you need someone to kick me because somebody queued up a thousand bass boost earrape meme compilations, please ask somebody with the ability to mute people in the voice channels to stop me!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.member.hasPermission('MUTE_MEMBERS')) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "You don't have adequate permissions to stop me from playing music! If you need someone to kick me because somebody queued up a thousand bass boost earrape meme compilations, please ask somebody with the ability to mute people in the voice channels to stop me!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue) {
-                    //     serverQueue.songs = [];
-                    //     serverQueue.connection.dispatcher.end();
-                    // } else {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There's nothing currently playing, silly!"
-                    //         }
-                    //     });
-                    // }
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue) {
+                        serverQueue.songs = [];
+                        serverQueue.connection.dispatcher.end();
+                    } else {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There's nothing currently playing, silly!"
+                            }
+                        });
+                    }
                 } else if (a == "nowplaying" || a == "np") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 3066993,
-                    //             description: `**${serverQueue.songs[0].title}** is currently playing!`
-                    //         }
-                    //     });
-                    // } else {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There's nothing currently playing, silly!"
-                    //         }
-                    //     });
-                    // }
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue) {
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                description: `**${serverQueue.songs[0].title}** is currently playing!`
+                            }
+                        });
+                    } else {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There's nothing currently playing, silly!"
+                            }
+                        });
+                    }
                 } else if (a == "queue") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 3066993,
-                    //             title: "Song Queue",
-                    //             description: `${serverQueue.songs.map(song => `• ${song.title}`).join("\n")}`
-                    //         }
-                    //     });
-                    // } else {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There are no queued songs!"
-                    //         }
-                    //     });
-                    // }
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue) {
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                title: "Song Queue",
+                                description: `${serverQueue.songs.map(song => `• ${song.title}`).join("\n")}`
+                            }
+                        });
+                    } else {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There are no queued songs!"
+                            }
+                        });
+                    }
                 } else if (a == "pause") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue && serverQueue.playing) {
-                    //     serverQueue.playing = false;
-                    //     serverQueue.connection.dispatcher.pause();
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 3066993,
-                    //             description: ":pause_button: The song has been paused"
-                    //         }
-                    //     });
-                    // } else if (serverQueue && !serverQueue.playing) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "The song is already paused!"
-                    //         }
-                    //     });
-                    // } else if (!serverQueue) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There's nothing currently playing, silly!"
-                    //         }
-                    //     });
-                    // }
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue && serverQueue.playing) {
+                        serverQueue.playing = false;
+                        serverQueue.connection.dispatcher.pause();
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                description: ":pause_button: The song has been paused"
+                            }
+                        });
+                    } else if (serverQueue && !serverQueue.playing) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "The song is already paused!"
+                            }
+                        });
+                    } else if (!serverQueue) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There's nothing currently playing, silly!"
+                            }
+                        });
+                    }
                 } else if (a == "resume") {
-                    message.channel.send({
-                        embed: {
-                            color: 16711680,
-                            description: "This feature is currently disabled because it is broken. Please try again later."
-                        }
-                    });
-                    // if (!message.guild) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                    if (!message.guild) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "Looks to me like you're not in a Discord server with a voice channel. Please use this command in a Discord server!"
+                            }
+                        });
+                        return;
+                    }
 
-                    // var serverQueue = queue.get(message.guild.id);
-                    // if (serverQueue && !serverQueue.playing) {
-                    //     serverQueue.playing = true;
-                    //     serverQueue.connection.dispatcher.resume();
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 3066993,
-                    //             description: ":arrow_forward: The song has been resumed"
-                    //         }
-                    //     });
-                    // } else if (serverQueue && serverQueue.playing) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "The song is already playing!"
-                    //         }
-                    //     });
-                    // } else if (!serverQueue) {
-                    //     message.channel.send({
-                    //         embed: {
-                    //             color: 16711680,
-                    //             description: "There's nothing currently playing, silly!"
-                    //         }
-                    //     });
-                    // }
+                    var serverQueue = queue.get(message.guild.id);
+                    if (serverQueue && !serverQueue.playing) {
+                        serverQueue.playing = true;
+                        serverQueue.connection.dispatcher.resume();
+                        message.channel.send({
+                            embed: {
+                                color: 3066993,
+                                description: ":arrow_forward: The song has been resumed"
+                            }
+                        });
+                    } else if (serverQueue && serverQueue.playing) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "The song is already playing!"
+                            }
+                        });
+                    } else if (!serverQueue) {
+                        message.channel.send({
+                            embed: {
+                                color: 16711680,
+                                description: "There's nothing currently playing, silly!"
+                            }
+                        });
+                    }
                 } else if (a == "wolfram" || a == "how" || a == "how\'s" || a == "hows" || a == "what" || a == "what\'s" || a == "whats" || a == "when" || a == "when\'s" || a == "whens" || a == "where" || a == "where\'s" || a == "wheres" || a == "why" || a == "why\'s" || a == "whys" || a == "name" || a == "define" || a == "definition" || a == "who" || a == "who\'s" || a == "whos" || a == "calculate" || a == "add" || a == "subtract" || a == "multiply" || a == "divide" || a == "solve" || a == "translate") {
                     if (alreadyRan) return;
 
@@ -1069,7 +1040,7 @@ client.on('message', async message => {
     }
 
     function play(guild, song, voiceChannel) {
-        const serverQueue = queue.get(guild.id);
+        var serverQueue = queue.get(guild.id);
 
         if (!song) {
             if (serverQueue) {
@@ -1079,13 +1050,47 @@ client.on('message', async message => {
             return;
         }
 
-        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-            .on('start', () => {
+        var stream = await ytdl(song.url, {
+            filter: 'audioonly',
+            highWaterMark: 1 << 25
+        });
+
+        stream.on('error', err => {
+            message.channel.send({
+                embed: {
+                    color: 16711680,
+                    description: "Something went wrong with the song playback, sorry about that!"
+                }
+            });
+            console.log("ytdl-core 'stream' issue:");
+            console.log(error);
+        });
+
+        var dispatcher = await serverQueue.connection.playStream(stream);
+
+        dispatcher.on('start', () => {
+            message.channel.send({
+                embed: {
+                    color: 3066993,
+                    title: `:arrow_forward: Now playing **${song.title}**`,
+                    description: `${song.description} ([Read more](${song.url}))`,
+                    "footer": {
+                        "text": song.duration
+                    },
+                    "thumbnail": {
+                        "url": song.thumbnail
+                    }
+                }
+            });
+        });
+
+        dispatcher.on('end', (reason) => {
+            console.log(reason);
+            setTimeout(function () {
                 message.channel.send({
                     embed: {
                         color: 3066993,
-                        title: `:arrow_forward: Now playing **${song.title}**`,
-                        description: `${song.description} ([Read more](${song.url}))`,
+                        title: `:track_next: The song **${song.title}** has ended`,
                         "footer": {
                             "text": song.duration
                         },
@@ -1094,47 +1099,34 @@ client.on('message', async message => {
                         }
                     }
                 });
-            }).on('end', () => {
-                setTimeout(function () {
+                if (voiceChannel.members.size === 1) {
                     message.channel.send({
                         embed: {
-                            color: 3066993,
-                            title: `:track_next: The song **${song.title}** has ended`,
-                            "footer": {
-                                "text": song.duration
-                            },
-                            "thumbnail": {
-                                "url": song.thumbnail
-                            }
+                            color: 16711680,
+                            description: "Looks to me like there's nobody else in the voice channel except for me. I've gone ahead and left the voice channel, and deleted the queue."
                         }
                     });
-                    if (voiceChannel.members.size === 1) {
-                        message.channel.send({
-                            embed: {
-                                color: 16711680,
-                                description: "Looks to me like there's nobody else in the voice channel except for me. I've gone ahead and left the voice channel, and deleted the queue."
-                            }
-                        });
-                        if (serverQueue) queue.delete(guild.id);
-                        serverQueue.voiceChannel.leave();
-                        return;
-                    }
+                    if (serverQueue) queue.delete(guild.id);
+                    serverQueue.voiceChannel.leave();
+                    return;
+                }
 
-                    serverQueue.skips = [];
-                    serverQueue.songs.shift();
-                    play(guild, serverQueue.songs[0], voiceChannel);
-                }, 200);
-            }).on('error', error => {
-                message.channel.send({
-                    embed: {
-                        color: 16711680,
-                        description: "Something went wrong with the song playback, sorry about that!"
-                    }
-                });
-                console.log(error);
+                serverQueue.skips = [];
+                serverQueue.songs.shift();
+                play(guild, serverQueue.songs[0], voiceChannel);
+            }, 200);
+        });
+        
+        dispatcher.on('error', error => {
+            message.channel.send({
+                embed: {
+                    color: 16711680,
+                    description: "Something went wrong with the song playback, sorry about that!"
+                }
             });
-
-        dispatcher.setVolumeLogarithmic(5 / 5);
+            console.log("dispatcher issue:");
+            console.log(error);
+        });
     }
 });
 
