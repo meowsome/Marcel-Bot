@@ -543,7 +543,7 @@ client.on('message', async message => {
                             color: 16711680,
                             description: "Please enter a song name, and I'll play it!"
                         }
-                    });;
+                    });
 
                     if (musicLink != "$") {
                         try {
