@@ -358,12 +358,7 @@ client.on('message', async message => {
 
                         body = JSON.parse(body);
 
-                        var image;
-                        try {
-                            image = body.data.image_original_url
-                        } catch (err) {
-                            console.log(err);
-                        }
+                        var image = (body.data) ? body.data.image_original_url : "";
 
                         message.channel.send({
                             embed: {
@@ -383,8 +378,8 @@ client.on('message', async message => {
                     for (var j = 0; j < inputSplit.length; j++) {
                         var currentString = inputSplit[j];
 
-                        for (var j = 0; j < currentString.length - 1; j++) {
-                            if (currentString.charAt(j) === '.') {
+                        for (var inMinecraftSearch = 0; inMinecraftSearch < currentString.length - 1; inMinecraftSearch++) {
+                            if (currentString.charAt(inMinecraftSearch) === '.') {
                                 if (currentString.indexOf(":") !== -1) {
                                     address[0] = currentString.slice(0, currentString.indexOf(":"));
                                     address[1] = currentString.slice(currentString.indexOf(":") + 1, currentString.length);
