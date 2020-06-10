@@ -7,7 +7,7 @@ const wolfram = new wolframClient('QWAEHQ-LKKXR6VE5K');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
-const youtube = new YouTube("AIzaSyA0sjK_iVXKFY4KL2JtLgjr_P2BCVjYKvY");
+const youtube = new YouTube("AIzaSyCpo6VSPyT4Zf5OYyU4dDLK0xkJ01bJCOM");
 const {
     fetchSubreddit
 } = require('fetch-subreddit');
@@ -142,16 +142,17 @@ client.on('message', async message => {
                         }
                     }
 
+                    var avatarURL;
                     try {
-                        var avatarURL = client.users.get(id).avatarURL;
+                        avatarURL = client.users.get(id).avatarURL;
                     } catch (error) {
+                        console.log(error);
                         message.channel.send({
                             embed: {
                                 color: 16711680,
                                 description: "Sorry, but there was an error collecting the avatar of that person!"
                             }
                         });
-
                         return;
                     }
 
@@ -167,8 +168,9 @@ client.on('message', async message => {
                 } else if (a == "profile" || a == "user") {
                     alreadyRan = true;
                     
+                    var id, userCreated, currentlyPlaying;
                     try {
-                        var id = message.author.id;
+                        id = message.author.id;
 
                         for (var j = 0; j < inputSplit.length; j++) {
                             if ((inputSplit[j].indexOf("@") != -1) && (inputSplit[j].indexOf("<") != -1) && (inputSplit[j].indexOf(">") != -1)) {
@@ -176,17 +178,17 @@ client.on('message', async message => {
                             }
                         }
 
-                        var userCreated = client.users.get(id).createdAt.toString().split(' ');
+                        userCreated = client.users.get(id).createdAt.toString().split(' ');
 
-                        var currentlyPlaying = (client.users.get(id).presence.game.name) ? client.users.get(id).presence.game.name : "N/A";
+                        currentlyPlaying = (client.users.get(id).presence.game.name) ? client.users.get(id).presence.game.name : "N/A";
                     } catch (error) {
+                        console.log(error);
                         message.channel.send({
                             embed: {
                                 color: 16711680,
                                 description: "Sorry, but there was an error collecting the profile information of that person!"
                             }
                         });
-                        
                         return;
                     }
 
@@ -409,6 +411,7 @@ client.on('message', async message => {
                             try {
                                 body = JSON.parse(body);
                             } catch (error) {
+                                console.log(error);
                                 message.edit({
                                     embed: {
                                         color: 16711680,
@@ -540,10 +543,13 @@ client.on('message', async message => {
                         }
                     });
 
+                    var video, videos;
+
                     if (musicLink != "$") {
                         try {
-                            var video = await youtube.getVideo(musicLink);
+                            video = await youtube.getVideo(musicLink);
                         } catch (error) {
+                            console.log(error);
                             message.channel.send({
                                 embed: {
                                     color: 16711680,
@@ -554,9 +560,10 @@ client.on('message', async message => {
                         }
                     } else if (searchQuery != "$" && inputSplit.length > 1) {
                         try {
-                            var videos = await youtube.searchVideos(searchQuery, 1);
-                            var video = await youtube.getVideoByID(videos[0].id);
+                            videos = await youtube.searchVideos(searchQuery, 1);
+                            video = await youtube.getVideoByID(videos[0].id);
                         } catch (error) {
+                            console.log(error);
                             message.channel.send({
                                 embed: {
                                     color: 16711680,
@@ -612,8 +619,9 @@ client.on('message', async message => {
                         queue.set(message.guild.id, queueConstruct);
                         queueConstruct.songs.push(song);
 
+                        var connection;
                         try {
-                            var connection = await voiceChannel.join();
+                            connection = await voiceChannel.join();
                             queueConstruct.connection = connection;
 
                             play(message.guild, queueConstruct.songs[0], voiceChannel);
