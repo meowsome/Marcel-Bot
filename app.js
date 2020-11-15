@@ -1067,7 +1067,7 @@ client.on('message', async message => {
                 }
             });
             console.log("ytdl-core 'stream' issue:");
-            console.log(error);
+            console.log(err);
         });
 
         var dispatcher = await serverQueue.connection.playStream(stream);
