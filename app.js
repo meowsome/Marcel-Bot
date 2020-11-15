@@ -16,12 +16,11 @@ const {
 } = require('article-parser');
 
 client.on('ready', () => {
-    console.log(`Marcel is running successfully\nUsers: ${client.users.size}\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
+    console.log(`Marcel is running successfully\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
 
     client.user.setPresence({
         game: {
-            // name: 'Say my name and "help" for help',
-            name: 'Music commands are back! Type my name and "play" for more.',
+            name: 'Say my name and "help" for help',
             type: 0
         }
     });
@@ -29,7 +28,7 @@ client.on('ready', () => {
        client.channels.get(process.env.MODCHANNEL).send({
            embed: {
                color: 3066993,
-               description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
+               description: `**Marcel is running successfully**\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
            }
        });
 });
@@ -43,7 +42,7 @@ client.on("guildCreate", guild => {
     });
 
     client.channels.get(process.env.COUNTER1).edit({
-        name: `${client.users.size}-`,
+        name: `${client.channels.size}-`,
         bitrate: 8000
     });
     client.channels.get(process.env.COUNTER2).edit({
