@@ -3,11 +3,11 @@ const request = require('request');
 const client = new Discord.Client();
 const weather = require('weather-js');
 const wolframClient = require('node-wolfram');
-const wolfram = new wolframClient('QWAEHQ-LKKXR6VE5K');
+const wolfram = new wolframClient(process.env.WOLFRAM);
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
-const youtube = new YouTube("AIzaSyCpo6VSPyT4Zf5OYyU4dDLK0xkJ01bJCOM");
+const youtube = new YouTube(process.env.YOUTUBE);
 const {
     fetchSubreddit
 } = require('fetch-subreddit');
@@ -26,7 +26,7 @@ client.on('ready', () => {
         }
     });
 
-       client.channels.get('397862894005387287').send({
+       client.channels.get(process.env.MODCHANNEL).send({
            embed: {
                color: 3066993,
                description: `**Marcel is running successfully**\n**Users:** ${client.users.size}\n**Channels:** ${client.channels.size}\n**Servers:** ${client.guilds.size}`
@@ -35,36 +35,36 @@ client.on('ready', () => {
 });
 
 client.on("guildCreate", guild => {
-    client.channels.get('397862894005387287').send({
+    client.channels.get(process.env.MODCHANNEL).send({
         embed: {
             color: 16312092,
             description: `**Joined Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
 
-    client.channels.get('397889669989400596').edit({
+    client.channels.get(process.env.COUNTER1).edit({
         name: `${client.users.size}-`,
         bitrate: 8000
     });
-    client.channels.get('397889346990112768').edit({
+    client.channels.get(process.env.COUNTER2).edit({
         name: `${client.guilds.size}-`,
         bitrate: 8000
     });
 });
 
 client.on("guildDelete", guild => {
-    client.channels.get('397862894005387287').send({
+    client.channels.get(process.env.MODCHANNEL).send({
         embed: {
             color: 16312092,
             description: `**Kicked from Server**\n**Name:** "${guild.name}"\n**ID:** ${guild.id}\n**Members:** ${guild.memberCount}`
         }
     });
 
-    client.channels.get('397889669989400596').edit({
+    client.channels.get(process.env.COUNTER1).edit({
         name: `${client.users.size}-`,
         bitrate: 8000
     });
-    client.channels.get('397889346990112768').edit({
+    client.channels.get(process.env.COUNTER2).edit({
         name: `${client.guilds.size}-`,
         bitrate: 8000
     });
@@ -74,7 +74,7 @@ client.on('error', (error) => {
     console.log("An error has occurred with the client, see below:");
     console.log(error);
 
-    client.channels.get('397862894005387287').send({
+    client.channels.get(process.env.MODCHANNEL).send({
         embed: {
             color: 16711680,
             description: "An error has occurred with the client, see console."
@@ -346,7 +346,7 @@ client.on('message', async message => {
                     var eightBallResponses = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
                     var simpleResponses = ['certainly', 'yes', 'absolutely', 'definitely', 'yep', 'thumbsup', 'yep', 'good', 'yes', 'yes', 'idk', 'later', 'thumbsdown', 'confused', 'think', 'disagree', 'nope', 'nope', 'bad', 'doubt'];
                     var eightBallResponsesRandom = Math.round(Math.random() * (eightBallResponses.length - 1));
-                    var url = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=%27+' + simpleResponses[eightBallResponsesRandom];
+                    var url = 'http://api.giphy.com/v1/gifs/random?api_key=' + process.env.GIPHY + '&tag=%27+' + simpleResponses[eightBallResponsesRandom];
 
                     request(url, function (err, response, body) {
                         if (err) {
