@@ -13,15 +13,15 @@
   "author": "meowsome & BucketMuncher",
   "license": "MIT",
   "dependencies": {
-    "article-parser": "^2.3.7",
+    "article-parser": "^4.2.7",
+    "better-redddit": "^1.2.6",
     "discord.js": "^11.6.4",
-    "fetch-subreddit": "^3.0.0",
     "fs": "0.0.1-security",
-    "node-wolfram": "0.0.1",
     "opusscript": "0.0.6",
     "simple-youtube-api": "^5.2.1",
+    "wajs": "0.0.17",
     "weather-js": "^2.0.0",
-    "ws": "^6.1.0",
+    "ws": "^7.4.4",
     "ytdl-core": "^4.1.4"
   },
   "devDependencies": {

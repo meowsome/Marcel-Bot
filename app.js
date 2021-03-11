@@ -2,18 +2,14 @@ const Discord = require('discord.js');
 const request = require('request');
 const client = new Discord.Client();
 const weather = require('weather-js');
-const wolframClient = require('node-wolfram');
-const wolfram = new wolframClient(process.env.WOLFRAM);
+const wajs = require('wajs');
+const wolfram = new wajs(process.env.WOLFRAM);
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const youtube = new YouTube(process.env.YOUTUBE);
-const {
-    fetchSubreddit
-} = require('fetch-subreddit');
-const {
-    extract
-} = require('article-parser');
+const fetchSubreddit = require('better-redddit');
+const { extract } = require('article-parser');
 
 client.on('ready', () => {
     console.log(`Marcel is running successfully\nChannels: ${client.channels.size}\nServers: ${client.guilds.size}`);
@@ -901,27 +897,29 @@ client.on('message', async message => {
                             description: loadingLines[loadingLinesRandom]
                         }
                     }).then(function (message) {
-                        wolfram.query(wolframQuestion, function (err, result) {
-                            if (!result) {
+                        wolfram.query(wolframQuestion).then(function(result) {
+                            var root = result.__root;
+
+                            if (root.error == "true") {
                                 message.edit({
                                     embed: {
                                         color: 16711680,
                                         description: "Sorry, something went wrong! 〒﹏〒  [Click here to learn more](https://marcel.meowso.me/#wolfram_error)"
                                     }
                                 });
-                            } else if (result.queryresult.$.numpods > 0) {
+                            } else if (root.numpods > 0) {
                                 var msg;
-                                if (result.queryresult.pod[1].subpod[0].plaintext.toString().length < 2048) {
-                                    msg = result.queryresult.pod[1].subpod[0].plaintext.toString();
+                                if (root.pod[1].subpod[0].plaintext.toString().length < 2048) {
+                                    msg = root.pod[1].subpod[0].plaintext.toString();
                                 } else {
-                                    msg = result.queryresult.pod[1].subpod[0].plaintext.toString().slice(0, 2045) + "...";
+                                    msg = root.pod[1].subpod[0].plaintext.toString().slice(0, 2045) + "...";
                                 }
                                 message.edit({
                                     embed: {
                                         color: 3066993,
                                         description: msg,
                                         "footer": {
-                                            "text": result.queryresult.pod[0].subpod[0].plaintext.toString()
+                                            "text": root.pod[0].subpod[0].plaintext.toString()
                                         }
                                     }
                                 });
@@ -937,7 +935,7 @@ client.on('message', async message => {
                             description: loadingLines[loadingLinesRandom]
                         }
                     }).then(function (message) {
-                        fetchSubreddit('news').then((redditPosts) => {
+                        fetchSubreddit.top_posts("news", 5).then((redditPosts) => {
                             var title = new Array();
                             var summary = new Array();
                             var source = new Array();
@@ -946,7 +944,7 @@ client.on('message', async message => {
                             var counter = 0;
 
                             for (var i = 0; i < 5; i++) {
-                                extract(redditPosts[0].urls[i]).then((websiteData) => {
+                                extract(redditPosts[i].data.url).then((websiteData) => {
                                     try {
                                         title.push(websiteData.title);
                                     } catch (err) {
@@ -954,7 +952,7 @@ client.on('message', async message => {
                                     }
 
                                     try {
-                                        summary.push(websiteData.description.replace(/\n/gi, " "));
+                                        summary.push(websiteData.description.replace(/\n/gi, " ").slice(0,150) + "...");
                                     } catch (err) {
                                         console.log(err);
                                     }
