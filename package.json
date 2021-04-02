@@ -15,7 +15,7 @@
   "dependencies": {
     "article-parser": "^4.2.7",
     "better-redddit": "^1.2.6",
-    "discord.js": "^11.6.4",
+    "discord.js": "11.4.2",
     "fs": "0.0.1-security",
     "opusscript": "0.0.6",
     "simple-youtube-api": "^5.2.1",
