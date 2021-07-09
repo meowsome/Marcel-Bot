@@ -26,6 +26,8 @@ client.on('ready', () => {
             description: `**Marcel is running successfully**\n**Channels:** ${client.channels.cache.size}\n**Servers:** ${client.guilds.cache.size}`
         }
     });
+
+    refreshWebsiteCounters(client);
 });
 
 client.on("guildCreate", guild => {
@@ -36,14 +38,7 @@ client.on("guildCreate", guild => {
         }
     });
 
-    client.channels.cache.get(process.env.COUNTER1).edit({
-        name: `${client.channels.cache.size}-`,
-        bitrate: 8000
-    });
-    client.channels.cache.get(process.env.COUNTER2).edit({
-        name: `${client.guilds.cache.size}-`,
-        bitrate: 8000
-    });
+    refreshWebsiteCounters(client);
 });
 
 client.on("guildDelete", guild => {
@@ -54,14 +49,7 @@ client.on("guildDelete", guild => {
         }
     });
 
-    client.channels.cache.get(process.env.COUNTER1).edit({
-        name: `${client.users.size}-`,
-        bitrate: 8000
-    });
-    client.channels.cache.get(process.env.COUNTER2).edit({
-        name: `${client.guilds.cache.size}-`,
-        bitrate: 8000
-    });
+    refreshWebsiteCounters(client);
 });
 
 client.on('error', (error) => {
@@ -1134,6 +1122,18 @@ function getCurrentOrId(id, args) {
 
     if (rawId) return rawId.replace(/[^\d]/g, "");
     else return id;
+}
+
+// Refresh the channel and guild counts on the website with the latest value
+function refreshWebsiteCounters(client) {
+    client.channels.cache.get(process.env.COUNTER1).edit({
+        name: `${client.channels.cache.size}-`,
+        bitrate: 8000
+    });
+    client.channels.cache.get(process.env.COUNTER2).edit({
+        name: `${client.guilds.cache.size}-`,
+        bitrate: 8000
+    });
 }
 
 client.login(process.env.TOKEN);
